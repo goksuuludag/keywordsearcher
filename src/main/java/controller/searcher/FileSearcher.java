@@ -2,16 +2,26 @@ package main.java.controller.searcher;
 
 import main.java.config.app.ConfigHandler;
 import main.java.config.locale.LocaleHandler;
+import main.java.controller.searcher.strategy.DocFileSearchingStrategy;
+import main.java.controller.searcher.strategy.DocxFileSearchingStrategy;
+import main.java.controller.searcher.strategy.PlainTextFileSearchingStrategy;
 
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public class FileSearcher {
-
+    private static final Map<String, FileSearchingStrategy> strategyMap = new HashMap<>();
+    static {
+        strategyMap.put("text", new PlainTextFileSearchingStrategy());
+        strategyMap.put("docx", new DocxFileSearchingStrategy());
+        strategyMap.put("doc", new DocFileSearchingStrategy());
+    }
     private FileSearcher() {}
 
     public static List<Path> getFilesContainingKeyword(String keyword, String directory) {
@@ -33,7 +43,8 @@ public class FileSearcher {
                 if(fileType == null) {
                     return FileVisitResult.CONTINUE;
                 }
-                if (TextFile.containsKeyword(p, keyword, fileType)) {
+                FileSearchingContext searchingContext = new FileSearchingContext(strategyMap.get(fileType));
+                if (searchingContext.search(p, keyword)) {
                     fileList.add(p);
                 }
                 return FileVisitResult.CONTINUE;
@@ -81,7 +92,8 @@ public class FileSearcher {
                             if(fileType == null) {
                                 return FileVisitResult.CONTINUE;
                             }
-                            if (TextFile.containsKeyword(p, keyword, fileType)) {
+                            FileSearchingContext searchingContext = new FileSearchingContext(strategyMap.get(fileType));
+                            if (searchingContext.search(p, keyword)) {
                                 found.add(p);
                             }
                             return FileVisitResult.CONTINUE;
