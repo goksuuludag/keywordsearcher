@@ -29,8 +29,8 @@ public class MainView extends JFrame {
         FlatMTMaterialDarkerIJTheme.setup();
         //initFonts();
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int width = (int) (screenSize.getWidth() * 0.75);
-        int height = (int) (screenSize.getHeight() * 0.75);
+        int width = (int) (screenSize.getWidth() * 0.6);
+        int height = (int) (screenSize.getHeight() * 0.6);
 
         setLayout(new BorderLayout());
         JPanel pnlHeader = initAndGetHeader();
