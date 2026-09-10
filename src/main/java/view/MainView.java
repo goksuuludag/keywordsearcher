@@ -6,6 +6,7 @@ import main.java.config.app.ConfigHandler;
 import main.java.config.locale.LocaleHandler;
 import main.java.model.QueryResultModel;
 import main.java.view.renderer.CenteredAndCapitalizedTextRenderer;
+import main.java.view.renderer.FileNameWithIconRenderer;
 import main.java.view.renderer.LocalizedRenderer;
 import main.java.view.renderer.WordWrapCellRenderer;
 
@@ -176,12 +177,14 @@ public class MainView extends JFrame {
     private JTable initAndGetTable(int totalWidth) {
         table = new JTable(new QueryResultModel());
         QueryResultModel model = (QueryResultModel) table.getModel();
+        int fileNameColumnIndex = model.getColumnIndexFromName("fileName");
         int filePathColumnIndex = model.getColumnIndexFromName("filePath");
         int extensionColumnIndex = model.getColumnIndexFromName("extension");
         for (int i = 0; i < table.getColumnCount(); i++) {
             table.getColumnModel().getColumn(i).setPreferredWidth((int)(totalWidth * columnWeights[i]));
         }
         table.getTableHeader().setDefaultRenderer(new LocalizedRenderer());
+        table.getColumnModel().getColumn(fileNameColumnIndex).setCellRenderer(new FileNameWithIconRenderer());
         table.getColumnModel().getColumn(filePathColumnIndex).setCellRenderer(new WordWrapCellRenderer());
         table.getColumnModel().getColumn(extensionColumnIndex).setCellRenderer(new CenteredAndCapitalizedTextRenderer());
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
