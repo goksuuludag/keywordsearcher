@@ -34,7 +34,6 @@ public class Main {
                 System.err.println(LocaleHandler.getString("error.txt.save.failed") +": " + keyword + " " + directory);
             }
             System.out.println(fileList);
-            System.out.println();
         }
     }
 
