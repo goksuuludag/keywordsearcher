@@ -8,6 +8,8 @@ import main.java.view.util.image.ImageRegistry;
 import main.java.view.component.misc.minesweeper.model.MineFieldModel;
 
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
@@ -16,8 +18,8 @@ import javax.swing.border.EmptyBorder;
 public class MineSweeperBoard {
 
     private JComponent ui = null;
-    Color[] colors = {
-            Color.BLUE,
+    private final Color[] colors = {
+            new Color(140, 150, 250),
             Color.CYAN.darker(),
             Color.GREEN.darker(),
             Color.YELLOW.darker(),
@@ -26,33 +28,35 @@ public class MineSweeperBoard {
             Color.MAGENTA,
             Color.RED
     };
-    private final static String BOMB = "*";
-    int size = 16;
+    private final String BOMB = "*";
+    private final int size = 16;
+    private final JButton btnReload;
 
     public MineSweeperBoard(JButton btnReload) {
+        this.btnReload = btnReload;
         initUI(btnReload);
     }
 
     public final void initUI(JButton btnReload) {
-//        if (ui != null) {
-//            return;
-//        }
-
         ui = new JPanel(new BorderLayout(4, 4));
         ui.setBorder(new EmptyBorder(4, 4, 4, 4));
 
         MineFieldModel mineFieldModel = new MineFieldModel(16, 45);
-        List<JButton> buttonList = new ArrayList<>();
-        JPanel mineFieldContainer = new JPanel(new GridLayout(
-                size, size));
+        JPanel mineFieldContainer = new JPanel(new GridLayout(size, size));
         ui.add(mineFieldContainer, BorderLayout.CENTER);
         int in = 5;
         Insets insets = new Insets(in, in, in, in);
-        //Font f = new Font("JetBrains Mono", Font.BOLD, 16);
+        List<JButton> buttonList = initAndGetMineFields(size, mineFieldModel, insets);
+        buttonList.forEach(mineFieldContainer::add);
+    }
+
+    private List<JButton> initAndGetMineFields(int size, MineFieldModel mineFieldModel, Insets insets) {
+        List<JButton> buttonList = new ArrayList<>();
         for (int ii = 0; ii < size; ii++) {
             for (int jj = 0; jj < size; jj++) {
                 JButton b = new JButton();
                 b.setMargin(insets);
+                //Font f = new Font("JetBrains Mono", Font.BOLD, 16);
                 //b.setFont(f);
                 b.setText("?");
                 if (mineFieldModel.isExposed(ii, jj)) {
@@ -72,76 +76,48 @@ public class MineSweeperBoard {
                 }
                 final int[] iii = new int[]{ii};
                 final int[] jjj = new int[]{jj};
-                b.addActionListener(l -> {
-                    int i = iii[0];
-                    int j = jjj[0];
-                    if(b.getText().equals("?")) {
-                        if (mineFieldModel.isBomb(i, j)) {
-                            b.setForeground(Color.red);
-                            b.setForeground(Color.BLACK);
-                            b.setText(BOMB);
-                            setButtonsEnabled(buttonList, false);
-                            btnReload.setIcon(ImageRegistry.getIcon("smiley_dead_32.png"));
-                        } else if (mineFieldModel.countSurroundingMines(i, j) > 0) {
-                            int count = mineFieldModel.countSurroundingMines(i, j);
-                            if (count > 0) {
-                                b.setForeground(colors[count - 1]);
-                                b.setText("" + count);
-                            }
+                b.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+                        if (!b.isEnabled()) {
+                            return;
+                        }
+                        int i = iii[0];
+                        int j = jjj[0];
+                        if (SwingUtilities.isRightMouseButton(e) && !mineFieldModel.isExposed(i,j)) {
+                            b.setText(Character.toString(0x1F6A9));
                         } else {
-                            b.setText("");
+                            exposeField(b, mineFieldModel, i, j, buttonList);
                         }
                     }
                 });
-                mineFieldContainer.add(b);
                 buttonList.add(b);
             }
         }
+        return buttonList;
     }
 
-    private void setButtonsEnabled(List<JButton> buttons, boolean isEnabled) {
-        for(JButton button : buttons) {
-            button.setEnabled(isEnabled);
-        }
-    }
-
-    private Vector<Font> getCompatibleFonts() {
-        Font[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts();
-        Vector<Font> fontVector = new Vector<>();
-
-        for (Font font : fonts) {
-            if (font.canDisplayUpTo("12345678" + BOMB) < 0) {
-                fontVector.add(font);
+    private void exposeField(JButton b, MineFieldModel mineFieldModel, int i, int j, List<JButton> buttonList) {
+        if (mineFieldModel.isBomb(i, j)) {
+            b.setForeground(Color.red);
+            b.setForeground(Color.BLACK);
+            b.setText(BOMB);
+            buttonList.forEach(btn -> btn.setEnabled(false));
+            btnReload.setIcon(ImageRegistry.getIcon("smiley_dead_32.png"));
+        } else if (mineFieldModel.countSurroundingMines(i, j) > 0) {
+            int count = mineFieldModel.countSurroundingMines(i, j);
+            if (count > 0) {
+                b.setForeground(colors[count - 1]);
+                b.setText("" + count);
             }
+        } else {
+            b.setText("");
         }
-        return fontVector;
     }
 
     public JComponent getUI() {
         return ui;
     }
-
-//    public static void main(String[] args) {
-//        Runnable r = () -> {
-//            try {
-//                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-//            } catch (Exception useDefault) {
-//            }
-//            MineSweeper o = new MineSweeper();
-//
-//            JFrame f = new JFrame(o.getClass().getSimpleName());
-//            f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//            f.setLocationByPlatform(true);
-//
-//            f.setContentPane(o.getUI());
-//            f.pack();
-//            f.setMinimumSize(f.getSize());
-//
-//            f.setVisible(true);
-//        };
-//        SwingUtilities.invokeLater(r);
-//
-//    }
 }
 
 
