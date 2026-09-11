@@ -9,6 +9,8 @@ import main.java.view.component.misc.minesweeper.MineSweeperPanel;
 import main.java.view.renderer.WordWrapCellRenderer;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.io.*;
@@ -35,9 +37,9 @@ public class ConsoleDialog extends JDialog {
         logTable = initAndGetLogTable(width, tableModel);
         CardLayout cardLayout = new CardLayout();
         JPanel pnlRecreation = initAndGetPnlRecreation(cardLayout);
-        pnlRecreation.add("console", new JScrollPane(logTable));
-        pnlRecreation.add("canvas", new DrawingCanvas());
-        pnlRecreation.add("minesweeper", new MineSweeperPanel());
+        addToPanelWithBorder("Console", new JScrollPane(logTable), pnlRecreation);
+        addToPanelWithBorder("Canvas", new DrawingCanvas(), pnlRecreation);
+        addToPanelWithBorder("Minesweeper", new MineSweeperPanel(), pnlRecreation);
 
         add(getInfoPnl(pnlRecreation, cardLayout), BorderLayout.NORTH);
         add(pnlRecreation, BorderLayout.CENTER);
@@ -136,6 +138,12 @@ public class ConsoleDialog extends JDialog {
 
     private JPanel initAndGetPnlRecreation(CardLayout cardLayout) {
         return new JPanel(cardLayout);
+    }
+
+    private void addToPanelWithBorder(String title, JComponent componentToAdd, JComponent container) {
+        Border border = new TitledBorder(title);
+        componentToAdd.setBorder(border);
+        container.add(title, componentToAdd);
     }
 
     public void fireSearchComplete() {
