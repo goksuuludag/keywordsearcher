@@ -1,7 +1,7 @@
 package main.java.view.component.misc.minesweeper.main;
 
-import main.java.view.component.misc.minesweeper.flow.TileProcessor;
-import main.java.view.component.misc.minesweeper.flow.TileProcessorImpl;
+import main.java.view.component.misc.minesweeper.flow.TileStatusProcessor;
+import main.java.view.component.misc.minesweeper.flow.TileStatusProcessorImpl;
 import main.java.view.component.misc.minesweeper.model.Tile;
 import main.java.view.component.misc.minesweeper.model.TileStatus;
 
@@ -12,7 +12,7 @@ import java.awt.event.MouseEvent;
 import java.util.Random;
 
 public class MineField {
-    private final TileProcessor processor;
+    private final TileStatusProcessor processor;
     private final Tile[][] tiles;
     private final Color[] colors = {
             new Color(140, 150, 250),
@@ -31,7 +31,7 @@ public class MineField {
         tiles = new Tile[width][height];
         initTiles(tiles, numberOfMines, setDeadRunnable);
         shuffle(tiles);
-        processor = new TileProcessorImpl();
+        processor = new TileStatusProcessorImpl();
     }
 
     private void initTiles(Tile[][] tiles, int numberOfMines, Runnable setDeadRunnable) {

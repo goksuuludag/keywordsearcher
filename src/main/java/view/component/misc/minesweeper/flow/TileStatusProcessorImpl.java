@@ -4,7 +4,7 @@ import main.java.view.component.misc.minesweeper.model.Tile;
 import main.java.view.component.misc.minesweeper.model.TileStatus;
 import java.awt.*;
 
-public class TileProcessorImpl implements TileProcessor {
+public class TileStatusProcessorImpl implements TileStatusProcessor {
 
     @Override
     public TileStatus handle(Point point, Tile[][] tiles) {

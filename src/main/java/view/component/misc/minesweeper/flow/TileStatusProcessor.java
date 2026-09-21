@@ -5,7 +5,7 @@ import main.java.view.component.misc.minesweeper.model.TileStatus;
 
 import java.awt.Point;
 
-public interface TileProcessor {
+public interface TileStatusProcessor {
     default TileStatus processLeftClick(Point point, TileStatus tileStatus, Tile[][] tiles) {
         return switch (tileStatus) {
             case TileStatus.Unknown _, TileStatus.Flagged _ -> this.processLeftClick(point, this.handle(point, tiles), tiles);
