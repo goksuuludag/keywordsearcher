@@ -1,5 +1,7 @@
 package main.java.view.component.misc.drawingcanvas;
 
+import main.java.config.locale.LocaleHandler;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -40,8 +42,7 @@ public class DrawingCanvas extends JPanel {
             }
         };
         canvas.setBackground(Color.WHITE);
-        MouseAdapter mouseHandler = new MouseAdapter() {
-
+        MouseAdapter mouseAdapter = new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
                 pointsList.getLast().add(e.getPoint());
@@ -50,18 +51,16 @@ public class DrawingCanvas extends JPanel {
             @Override
             public void mouseReleased(MouseEvent e) {
                 pointsList.add(new ArrayList<>());
-                canvas.repaint();
             }
-
         };
-        canvas.addMouseListener(mouseHandler);
-        canvas.addMouseMotionListener(mouseHandler);
+        canvas.addMouseListener(mouseAdapter);
+        canvas.addMouseMotionListener(mouseAdapter);
         return canvas;
     }
 
     private Component initAndGetHeader() {
         JPanel header = new JPanel();
-        JButton btnClear = new JButton("Clear");
+        JButton btnClear = new JButton(LocaleHandler.getString("component.btnClear"));
         btnClear.setBorderPainted(false);
         btnClear.addActionListener(l -> {
             pointsList.clear();
