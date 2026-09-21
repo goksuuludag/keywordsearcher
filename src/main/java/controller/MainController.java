@@ -110,7 +110,7 @@ public class MainController {
         if (!view.isVisible()) {
             SwingUtilities.invokeLater(() -> view.setVisible(true));
         } else {
-            view.toFront();
+            SwingUtilities.invokeLater(view::toFront);
         }
     }
 }
