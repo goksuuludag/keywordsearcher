@@ -37,24 +37,24 @@ public class MineField {
     private void initTiles(Tile[][] tiles, int numberOfMines, Runnable setDeadRunnable) {
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles[0].length; j++) {
-                JButton b = new JButton();
+                JButton button = new JButton();
                 final int x = i;
                 final int y = j;
-                b.addMouseListener(new MouseAdapter() {
+                button.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mousePressed(MouseEvent e) {
-                        if (!b.isEnabled()) {
+                        if (!button.isEnabled()) {
                             return;
                         }
                         if (SwingUtilities.isRightMouseButton(e)) {
-                            processStatus(b, processRightClick(x, y), setDeadRunnable);
+                            processStatus(button, processRightClick(x, y), setDeadRunnable);
                         } else {
-                            processStatus(b, processLeftClick(x, y), setDeadRunnable);
-                            b.getModel().setPressed(true);
+                            processStatus(button, processLeftClick(x, y), setDeadRunnable);
+                            button.getModel().setPressed(true);
                         }
                     }
                 });
-                tiles[i][j] = new Tile(i, j, b, new TileStatus.Unknown(), numberOfMines > 0);
+                tiles[i][j] = new Tile(i, j, button, new TileStatus.Unknown(), numberOfMines > 0);
                 numberOfMines--;
             }
         }
