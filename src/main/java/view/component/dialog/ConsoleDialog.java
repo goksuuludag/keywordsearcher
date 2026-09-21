@@ -3,9 +3,9 @@ package main.java.view.component.dialog;
 import main.java.config.locale.LocaleHandler;
 import main.java.model.ConsoleOutputModel;
 import main.java.model.ConsoleOutputModel.*;
+import main.java.view.component.misc.minesweeper.main.MineSweeperPanel;
 import main.java.view.util.image.ImageRegistry;
 import main.java.view.component.misc.drawingcanvas.DrawingCanvas;
-import main.java.view.component.misc.minesweeper.MineSweeperPanel;
 import main.java.view.renderer.WordWrapCellRenderer;
 
 import javax.swing.*;
@@ -39,7 +39,7 @@ public class ConsoleDialog extends JDialog {
         JPanel pnlRecreation = initAndGetPnlRecreation(cardLayout);
         addToPanelWithBorder("Console", new JScrollPane(logTable), pnlRecreation);
         addToPanelWithBorder("Canvas", new DrawingCanvas(), pnlRecreation);
-        addToPanelWithBorder("Minesweeper", new MineSweeperPanel(), pnlRecreation);
+        addToPanelWithBorder("Minesweeper", new MineSweeperPanel(16, 16, 45), pnlRecreation);
 
         add(getInfoPnl(pnlRecreation, cardLayout), BorderLayout.NORTH);
         add(pnlRecreation, BorderLayout.CENTER);
