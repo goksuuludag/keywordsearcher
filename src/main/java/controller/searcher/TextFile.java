@@ -124,4 +124,8 @@ public class TextFile {
     private static boolean doesTextContainKeyword(String text, String keyword) {
         return Pattern.compile(Pattern.quote(keyword), Pattern.CASE_INSENSITIVE).matcher(text).find();
     }
+
+    public static Map<String, Set<String>> getFileExtensionMap() {
+        return fileExtensionMap;
+    }
 }

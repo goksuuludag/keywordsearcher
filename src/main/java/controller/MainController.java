@@ -56,7 +56,7 @@ public class MainController {
 
     private void initBtnFilter(JButton btnFilter) {
         btnFilter.addActionListener(l -> {
-            FilterDialog filterDialog = new FilterDialog(view.getTable());
+            FilterDialog filterDialog = FilterDialog.getInstance(view.getTable(),view);
             filterDialog.showDialog();
         });
     }
