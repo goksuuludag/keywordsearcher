@@ -28,13 +28,15 @@ public class MineSweeperPanel extends JPanel {
     }
 
     private JPanel initAndGetPnlTiles(int width, int height, int numberOfMines, Runnable setDeadRunnable) {
+        MineField mineField = new MineField(width, height, numberOfMines, setDeadRunnable);
+
         JPanel pnlTiles = new JPanel(new BorderLayout(4, 4));
         pnlTiles.setBorder(new EmptyBorder(4, 4, 4, 4));
-        MineField mineField = new MineField(width, height, numberOfMines, setDeadRunnable);
-        JPanel mineFieldContainer = new JPanel(new GridLayout(width, height));
-        pnlTiles.add(mineFieldContainer, BorderLayout.CENTER);
+
+        JPanel pnlMineFieldContainer = new JPanel(new GridLayout(width, height));
+        pnlTiles.add(pnlMineFieldContainer, BorderLayout.CENTER);
         List<JButton> buttonList = initAndGetMineFields(mineField);
-        buttonList.forEach(mineFieldContainer::add);
+        buttonList.forEach(pnlMineFieldContainer::add);
         return pnlTiles;
     }
 
@@ -49,7 +51,7 @@ public class MineSweeperPanel extends JPanel {
     }
 
     private static class SmileyButton extends JButton {
-        public void setDead(boolean isDead) {
+        private void setDead(boolean isDead) {
             if (isDead) {
                 setIcon(ImageRegistry.getIcon("smiley_dead_32.png"));
             } else {
