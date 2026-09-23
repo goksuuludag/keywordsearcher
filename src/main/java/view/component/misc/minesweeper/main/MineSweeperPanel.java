@@ -1,5 +1,6 @@
 package main.java.view.component.misc.minesweeper.main;
 
+import main.java.config.app.ConfigHandler;
 import main.java.view.component.misc.minesweeper.model.Tile;
 import main.java.view.util.image.ImageRegistry;
 
@@ -11,7 +12,11 @@ import java.util.List;
 
 public class MineSweeperPanel extends JPanel {
 
-    public MineSweeperPanel(int width, int height, int numberOfMines) {
+    public MineSweeperPanel() {
+
+        int width = Integer.parseInt(ConfigHandler.getProperty("minesweeperTileWidth"));
+        int height = Integer.parseInt(ConfigHandler.getProperty("minesweeperTileHeight"));
+        int numberOfMines = Integer.parseInt(ConfigHandler.getProperty("minesweeperMineCount"));
         setLayout(new BorderLayout());
         SmileyButton btnReload = new SmileyButton();
         btnReload.addActionListener(l -> {
@@ -42,9 +47,10 @@ public class MineSweeperPanel extends JPanel {
 
     private List<JButton> initAndGetMineFields(MineField mineField) {
         List<JButton> buttonList = new ArrayList<>();
-        for (Tile[] tileRows : mineField.getTiles()) {
-            for (Tile tile : tileRows) {
-                buttonList.add(tile.button());
+        Tile[][] tiles = mineField.getTiles();
+        for (int i = 0; i < tiles.length; i++) {
+            for (int j = 0; j < tiles[i].length; j++) {
+                buttonList.add(tiles[i][j].button());
             }
         }
         return buttonList;

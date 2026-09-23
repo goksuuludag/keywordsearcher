@@ -29,15 +29,30 @@ public class MineField {
 
     public MineField(int width, int height, int numberOfMines, Runnable setDeadRunnable) {
         tiles = new Tile[width][height];
-        initTiles(tiles, numberOfMines, setDeadRunnable);
-        shuffle(tiles);
+        boolean[][] isBomb = initAndGetBombs(width, height, numberOfMines);
+        initTiles(tiles, isBomb, setDeadRunnable);
         processor = new TileStatusProcessorImpl();
     }
 
-    private void initTiles(Tile[][] tiles, int numberOfMines, Runnable setDeadRunnable) {
+    private boolean[][] initAndGetBombs(int width, int height, int numberOfMines) {
+        boolean[][] isBomb = new boolean[width][height];
+        int numberOfMinesTemp = numberOfMines;
+        for(int i = 0; i < isBomb.length; i++) {
+            for(int j = 0; j < isBomb[i].length; j++) {
+                isBomb[i][j] = numberOfMinesTemp > 0;
+                numberOfMinesTemp--;
+            }
+        }
+        shuffle(isBomb);
+        return isBomb;
+    }
+
+    private void initTiles(Tile[][] tiles, boolean[][] isBomb, Runnable setDeadRunnable) {
         for (int i = 0; i < tiles.length; i++) {
-            for (int j = 0; j < tiles[0].length; j++) {
+            for (int j = 0; j < tiles[i].length; j++) {
                 JButton button = new JButton();
+                button.setFocusable(false);
+                final Color pressedButtonBg = button.getBackground().darker();
                 final int x = i;
                 final int y = j;
                 button.addMouseListener(new MouseAdapter() {
@@ -50,12 +65,11 @@ public class MineField {
                             processStatus(button, processRightClick(x, y), setDeadRunnable);
                         } else {
                             processStatus(button, processLeftClick(x, y), setDeadRunnable);
-                            button.getModel().setPressed(true);
+                            button.setBackground(pressedButtonBg);
                         }
                     }
                 });
-                tiles[i][j] = new Tile(i, j, button, new TileStatus.Unknown(), numberOfMines > 0);
-                numberOfMines--;
+                tiles[i][j] = new Tile(i, j, button, new TileStatus.Unknown(), isBomb[i][j]);
             }
         }
     }
@@ -80,16 +94,16 @@ public class MineField {
         }
     }
 
-    private <T> void shuffle(T[][] a) {
+    private void shuffle(boolean[][] arr) {
         Random random = new Random();
-        for (int i = a.length - 1; i > 0; i--) {
-            for (int j = a[i].length - 1; j > 0; j--) {
+        for (int i = arr.length - 1; i > 0; i--) {
+            for (int j = arr[i].length - 1; j > 0; j--) {
                 int m = random.nextInt(i + 1);
                 int n = random.nextInt(j + 1);
 
-                T temp = a[i][j];
-                a[i][j] = a[m][n];
-                a[m][n] = temp;
+                boolean temp = arr[i][j];
+                arr[i][j] = arr[m][n];
+                arr[m][n] = temp;
             }
         }
     }
