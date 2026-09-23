@@ -1,20 +1,27 @@
 package main.java.view.util.image;
 
+import main.java.config.locale.LocaleHandler;
+
 import javax.swing.*;
 import java.awt.*;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ImageRegistry {
     private static final Map<String, ImageIcon> cache = new HashMap<>();
     private static final Map<ScaledImageSpecs, ImageIcon> scaledImageCache = new HashMap<>();
-
+    private static final String IMAGES_PATH = "/main/resources/images/";
     public static ImageIcon getIcon(String path) {
         if (cache.containsKey(path)) {
             return cache.get(path);
         }
-        String fullPath = "src/main/resources/images/" + path;
-        ImageIcon icon = new ImageIcon(fullPath);
+        URL url = ImageRegistry.class.getResource(IMAGES_PATH + path);
+        if(url == null) {
+            System.err.println("Error loading up icon: " + IMAGES_PATH + path);
+            return null;
+        }
+        ImageIcon icon = new ImageIcon(url);
         cache.put(path, icon);
         return icon;
     }
@@ -24,8 +31,12 @@ public class ImageRegistry {
         if (scaledImageCache.containsKey(imgSpecs)) {
             return scaledImageCache.get(imgSpecs);
         }
-        String fullPath = "src/main/resources/images/" + path;
-        ImageIcon icon = new ImageIcon(fullPath);
+        URL url = ImageRegistry.class.getResource(IMAGES_PATH+ path);
+        if(url == null) {
+            System.err.println("Error loading up icon: " + IMAGES_PATH + path);
+            return null;
+        }
+        ImageIcon icon = new ImageIcon(url);
         icon = new ImageIcon(icon.getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT));
         scaledImageCache.put(imgSpecs, icon);
         return icon;
