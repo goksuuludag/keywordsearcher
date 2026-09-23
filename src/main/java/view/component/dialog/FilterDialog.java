@@ -14,20 +14,19 @@ import java.util.List;
 
 public class FilterDialog extends JDialog {
 
-    private JTextField txtField;
     private static FilterDialog instance;
-    private final List<RowFilter<Object, Object>> filters;
 
     private FilterDialog(JTable table, Container view) {
-        filters = new ArrayList<>();
+        List<RowFilter<Object, Object>> filters = new ArrayList<>();
         List<Component> buttons = new ArrayList<>();
         List<Component> popupMenus = new ArrayList<>();
+        JTextField txtField = new JTextField();
 
         setLayout(new BorderLayout());
-        add(getTxtFieldContainer(), BorderLayout.NORTH);
-        add(getMenuContainer(TextFile.getFileExtensionMap(), buttons, popupMenus), BorderLayout.CENTER);
-        add(getButtonContainer(table, popupMenus), BorderLayout.SOUTH);
 
+        add(getTxtFieldContainer(txtField), BorderLayout.NORTH);
+        add(getMenuContainer(TextFile.getFileExtensionMap(), buttons, popupMenus), BorderLayout.CENTER);
+        add(getButtonContainer(table, txtField, popupMenus, filters), BorderLayout.SOUTH);
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int width = (int) (screenSize.getWidth() * 0.10);
@@ -89,7 +88,7 @@ public class FilterDialog extends JDialog {
 
             chkbxFileType.addItemListener(l -> {
                 btnFileType.setEnabled(chkbxFileType.isSelected());
-                for(Component item : popupMenu.getComponents()) {
+                for (Component item : popupMenu.getComponents()) {
                     JCheckBoxMenuItem checkBoxMenuItem = (JCheckBoxMenuItem) item;
                     checkBoxMenuItem.setSelected(chkbxFileType.isSelected());
                 }
@@ -103,7 +102,7 @@ public class FilterDialog extends JDialog {
         return pnlMenuContainer;
     }
 
-    private Container getButtonContainer(JTable table, List<Component> popupMenus) {
+    private Container getButtonContainer(JTable table, JTextField txtField, List<Component> popupMenus, List<RowFilter<Object, Object>> filters) {
         JPanel pnlButtonContainer = new JPanel(new GridBagLayout());
         GridBagConstraints gbcBtnAccept = new GridBagConstraints();
         gbcBtnAccept.insets = new Insets(0, 10, 0, 10);
@@ -121,43 +120,12 @@ public class FilterDialog extends JDialog {
         gbcBtnCancel.gridx = 1;
         gbcBtnCancel.gridy = 0;
 
-        pnlButtonContainer.add(getBtnAccept(table, popupMenus), gbcBtnAccept);
+        pnlButtonContainer.add(getBtnAccept(table, txtField, popupMenus, filters), gbcBtnAccept);
         pnlButtonContainer.add(getBtnCancel(popupMenus), gbcBtnCancel);
         return pnlButtonContainer;
     }
 
-    private Container getDocumentTypeContainer(List<String> documentTypes) {
-        JPanel pnlDocumentTypeContainer = new JPanel(new GridBagLayout());
-        JLabel lblSearchDocument = new JLabel(LocaleHandler.getString("component.lblSearchDocument"));
-        GridBagConstraints gbcLblSearchDocument = new GridBagConstraints();
-        gbcLblSearchDocument.insets = new Insets(0, 10, 0, 10);
-        gbcLblSearchDocument.fill = GridBagConstraints.HORIZONTAL;
-        gbcLblSearchDocument.anchor = GridBagConstraints.WEST;
-        gbcLblSearchDocument.weightx = 0.5;
-        gbcLblSearchDocument.gridx = 0;
-        gbcLblSearchDocument.gridy = 0;
-
-        JMenu jMenuDocType = new JMenu();
-        JMenuBar jMenuBar = new JMenuBar();
-        jMenuBar.add(jMenuDocType);
-
-        GridBagConstraints gbcJMenuDocType = new GridBagConstraints();
-        gbcJMenuDocType.insets = new Insets(0, 10, 0, 10);
-        gbcJMenuDocType.fill = GridBagConstraints.HORIZONTAL;
-        gbcJMenuDocType.anchor = GridBagConstraints.WEST;
-        gbcJMenuDocType.weightx = 0.5;
-        gbcJMenuDocType.gridx = 1;
-        gbcJMenuDocType.gridy = 1;
-        pnlDocumentTypeContainer.add(jMenuBar, gbcJMenuDocType);
-        for (String documentType : documentTypes) {
-            JRadioButtonMenuItem rdBtnDocType = new JRadioButtonMenuItem(LocaleHandler.getString("component.rdBtn" + documentType));
-            jMenuDocType.add(rdBtnDocType);
-        }
-        pnlDocumentTypeContainer.add(lblSearchDocument, gbcLblSearchDocument);
-        return pnlDocumentTypeContainer;
-    }
-
-    private Container getTxtFieldContainer() {
+    private Container getTxtFieldContainer(JTextField txtField) {
         JPanel pnlTxtFieldContainer = new JPanel(new GridBagLayout());
 
         JLabel lblFilter = new JLabel(LocaleHandler.getString("component.lblFilter"));
@@ -170,7 +138,6 @@ public class FilterDialog extends JDialog {
         gbcLblFilter.gridy = 0;
         pnlTxtFieldContainer.add(lblFilter, gbcLblFilter);
 
-        txtField = new JTextField();
         GridBagConstraints gbcTxtField = new GridBagConstraints();
         gbcTxtField.insets = new Insets(0, 10, 0, 10);
         gbcTxtField.fill = GridBagConstraints.HORIZONTAL;
@@ -201,13 +168,13 @@ public class FilterDialog extends JDialog {
         return btnCancel;
     }
 
-    private JButton getBtnAccept(JTable table, List<Component> popupMenus) {
+    private JButton getBtnAccept(JTable table, JTextField txtField, List<Component> popupMenus, List<RowFilter<Object, Object>> filters) {
         JButton btnAccept = new JButton(LocaleHandler.getString("component.btnAccept"));
         int fileNameColumnIndex = table.convertColumnIndexToModel(0);
         btnAccept.addActionListener(l -> {
             filters.clear();
-            registerFilter(RowFilter.regexFilter("(?i)"+ txtField.getText(), fileNameColumnIndex));
-            registerFilter(new RowFilter<>() {
+            filters.add(RowFilter.regexFilter("(?i)" + txtField.getText(), fileNameColumnIndex));
+            filters.add(new RowFilter<>() {
                 public boolean include(Entry<?, ?> entry) {
                     Set<String> extensionsToLookFor = new HashSet<>();
                     popupMenus.forEach(p -> {
@@ -223,22 +190,14 @@ public class FilterDialog extends JDialog {
                     return extensionsToLookFor.contains(entry.getStringValue(2));
                 }
             });
-            filter(table);
+            filter(table, filters);
             popupMenus.forEach(p -> p.setVisible(false));
             dispose();
         });
         return btnAccept;
     }
 
-    private void registerFilter(RowFilter<Object, Object> filter) {
-        filters.add(filter);
-    }
-
-    private void initFilters(JTable table, List<RowFilter<Object, Object>> filters) {
-
-    }
-
-    private void filter(JTable table) {
+    private void filter(JTable table, List<RowFilter<Object, Object>> filters) {
         TableRowSorter<TableModel> sorter = new TableRowSorter<>(table.getModel());
         sorter.setRowFilter(RowFilter.andFilter(filters));
         table.setRowSorter(sorter);
