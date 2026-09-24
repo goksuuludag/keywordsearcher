@@ -27,7 +27,9 @@ public class ConsoleDialog extends JDialog {
     private final ConsoleOutputModel tableModel;
     private JLabel lblCig;
     private JLabel lblDone;
+    private final JButton btnClose;
 
+    // TODO cancel search could be implemented
     public ConsoleDialog() {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int width = (int) (screenSize.getWidth() * 0.35);
@@ -36,6 +38,7 @@ public class ConsoleDialog extends JDialog {
 
         tableModel = new ConsoleOutputModel();
         logTable = initAndGetLogTable(width, tableModel);
+        btnClose = getBtnClose();
         CardLayout cardLayout = new CardLayout();
         JPanel pnlRecreation = initAndGetPnlRecreation(cardLayout);
         addToPanelWithBorder("Console", new JScrollPane(logTable), pnlRecreation);
@@ -44,7 +47,8 @@ public class ConsoleDialog extends JDialog {
 
         add(getInfoPnl(pnlRecreation, cardLayout), BorderLayout.NORTH);
         add(pnlRecreation, BorderLayout.CENTER);
-        add(getBtnClose(), BorderLayout.SOUTH);
+        add(btnClose, BorderLayout.SOUTH);
+        setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         consoleBufferWorker.execute();
     }
 
@@ -122,8 +126,9 @@ public class ConsoleDialog extends JDialog {
         return pnlInfo;
     }
 
-    private Component getBtnClose() {
+    private JButton getBtnClose() {
         JButton btnClose = new JButton(LocaleHandler.getString("component.btnClose"));
+        btnClose.setEnabled(false);
         btnClose.addActionListener(l -> {
             System.setErr(originalErr);
             dispose();
@@ -151,6 +156,8 @@ public class ConsoleDialog extends JDialog {
         ImageIcon scaledIcon = ImageRegistry.getScaledIcon("cig2_lastFrame.png", 90, 90);
         lblCig.setIcon(scaledIcon);
         lblDone.setVisible(true);
+        btnClose.setEnabled(true);
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         System.setErr(originalErr);
         consoleBufferWorker.cancel(true);
     }
