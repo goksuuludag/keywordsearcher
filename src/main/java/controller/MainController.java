@@ -15,6 +15,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.*;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -36,27 +37,26 @@ public class MainController {
 
         table.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent mouseEvent) {
+                if (mouseEvent.getClickCount() < 2 || table.getSelectedRow() == -1 || table.rowAtPoint(mouseEvent.getPoint()) == -1) {
+                    return;
+                }
                 Point point = mouseEvent.getPoint();
                 int row = table.rowAtPoint(point);
-                if (mouseEvent.getClickCount() == 2 && table.getSelectedRow() != -1 && row != -1) {
-                    int modelRow = table.convertRowIndexToModel(row);
-                    int columnIndex = model.getColumnIndexFromName("filePath");
-                    Path value = (Path) table.getValueAt(modelRow, table.convertColumnIndexToModel(columnIndex));
-                    File file = new File(value.toString());
-                    if (Desktop.isDesktopSupported()) {
-                        Desktop desktop = Desktop.getDesktop();
-                        if (desktop.isSupported(Desktop.Action.BROWSE_FILE_DIR)) {
-                            desktop.browseFileDirectory(file);
-                        }
-                    }
+                int columnIndex = model.getColumnIndexFromName("filePath");
+                Path value = (Path) table.getValueAt(row, table.convertColumnIndexToModel(columnIndex));
+                try {
+                    new ProcessBuilder("explorer.exe", "/select,", value.toString()).start();
+                } catch (IOException e) {
+                    System.err.println(LocaleHandler.getString("error.viewing.in.file.explorer"));
                 }
+
             }
         });
     }
 
     private void initBtnFilter(JButton btnFilter) {
         btnFilter.addActionListener(l -> {
-            FilterDialog filterDialog = FilterDialog.getInstance(view.getTable(),view);
+            FilterDialog filterDialog = FilterDialog.getInstance(view.getTable(), view);
             filterDialog.showDialog();
         });
     }
@@ -64,6 +64,7 @@ public class MainController {
     private void initBtnRemoveFilter(JButton btnRemoveFilter) {
         btnRemoveFilter.addActionListener(l -> {
             view.getTable().setRowSorter(null);
+            FilterDialog.reset();
         });
     }
 
