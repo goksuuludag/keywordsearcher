@@ -2,11 +2,14 @@ package main.java.view.component.dialog;
 
 import main.java.config.locale.LocaleHandler;
 import main.java.controller.searcher.TextFile;
+import main.java.model.QueryResultModel;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.*;
@@ -29,7 +32,7 @@ public class FilterDialog extends JDialog {
         add(getButtonContainer(table, txtField, popupMenus, filters), BorderLayout.SOUTH);
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int width = (int) (screenSize.getWidth() * 0.10);
+        int width = (int) (screenSize.getWidth() * 0.13);
         int height = (int) (screenSize.getHeight() * 0.20);
         setSize(width, height);
         setLocationRelativeTo(view);
@@ -62,12 +65,7 @@ public class FilterDialog extends JDialog {
             gbcBtnFileType.gridy = componentPairIndex;
             buttons.add(btnFileType);
 
-            JPopupMenu popupMenu = new JPopupMenu();
-            for (String extension : fileExtensions) {
-                JCheckBoxMenuItem item = new JCheckBoxMenuItem(extension);
-                item.setSelected(true);
-                popupMenu.add(item);
-            }
+            JPopupMenu popupMenu = getJPopupMenu(fileExtensions);
             popupMenu.setVisible(false);
             popupMenus.add(popupMenu);
             btnFileType.addActionListener(l -> {
@@ -102,6 +100,48 @@ public class FilterDialog extends JDialog {
         return pnlMenuContainer;
     }
 
+    private JPopupMenu getJPopupMenu(Set<String> fileExtensions) {
+        JPopupMenu popupMenu = new JPopupMenu();
+        JCheckBoxMenuItem selectAllItem = new JCheckBoxMenuItem(LocaleHandler.getString("component.selectAllItem"));
+        selectAllItem.setSelected(true);
+        popupMenu.add(selectAllItem);
+        for (String extension : fileExtensions) {
+            JCheckBoxMenuItem extensionItem = new JCheckBoxMenuItem(extension);
+            extensionItem.setSelected(true);
+            extensionItem.addItemListener(l -> {
+                boolean state = ((JCheckBoxMenuItem)popupMenu.getComponents()[1]).isSelected();
+                for (int i = 1; i < popupMenu.getComponents().length; i++) {
+                    boolean newState = ((JCheckBoxMenuItem)popupMenu.getComponents()[i]).isSelected();
+                    if(!newState) {
+                        ItemListener listener = selectAllItem.getItemListeners()[0];
+                        selectAllItem.removeItemListener(listener);
+                        selectAllItem.setSelected(false);
+                        selectAllItem.addItemListener(listener);
+                        return;
+                    }
+                }
+                ItemListener listener = selectAllItem.getItemListeners()[0];
+                selectAllItem.removeItemListener(listener);
+                selectAllItem.setSelected(true);
+                selectAllItem.addItemListener(listener);
+            });
+            popupMenu.add(extensionItem);
+        }
+        selectAllItem.addItemListener(l -> {
+            if (l.getSource() != selectAllItem) {
+                return;
+            }
+            for (int i = 1; i < popupMenu.getComponents().length; i++) {
+                JCheckBoxMenuItem item = (JCheckBoxMenuItem) popupMenu.getComponents()[i];
+                ItemListener listener = item.getItemListeners()[0];
+                item.removeItemListener(listener);
+                item.setSelected(l.getStateChange() == ItemEvent.SELECTED);
+                item.addItemListener(listener);
+            }
+        });
+        return popupMenu;
+    }
+
     private Container getButtonContainer(JTable table, JTextField txtField, List<Component> popupMenus, List<RowFilter<Object, Object>> filters) {
         JPanel pnlButtonContainer = new JPanel(new GridBagLayout());
         GridBagConstraints gbcBtnAccept = new GridBagConstraints();
@@ -133,7 +173,7 @@ public class FilterDialog extends JDialog {
         gbcLblFilter.insets = new Insets(0, 10, 0, 10);
         gbcLblFilter.fill = GridBagConstraints.HORIZONTAL;
         gbcLblFilter.anchor = GridBagConstraints.WEST;
-        gbcLblFilter.weightx = 1.0;
+        gbcLblFilter.weightx = 0.0;
         gbcLblFilter.gridx = 0;
         gbcLblFilter.gridy = 0;
         pnlTxtFieldContainer.add(lblFilter, gbcLblFilter);
@@ -152,7 +192,7 @@ public class FilterDialog extends JDialog {
         gbcLblIn.insets = new Insets(0, 10, 0, 10);
         gbcLblIn.fill = GridBagConstraints.HORIZONTAL;
         gbcLblIn.anchor = GridBagConstraints.WEST;
-        gbcLblIn.weightx = 1.0;
+        gbcLblIn.weightx = 0.0;
         gbcLblIn.gridx = 2;
         gbcLblIn.gridy = 0;
         pnlTxtFieldContainer.add(lblIn, gbcLblIn);
@@ -170,24 +210,27 @@ public class FilterDialog extends JDialog {
 
     private JButton getBtnAccept(JTable table, JTextField txtField, List<Component> popupMenus, List<RowFilter<Object, Object>> filters) {
         JButton btnAccept = new JButton(LocaleHandler.getString("component.btnAccept"));
-        int fileNameColumnIndex = table.convertColumnIndexToModel(0);
+        QueryResultModel model = (QueryResultModel) table.getModel();
+        int fileNameColumnIndex = model.getColumnIndexFromName("fileName");
+        int extensionColumnIndex = model.getColumnIndexFromName("extension");
         btnAccept.addActionListener(l -> {
+            int fileNameIndex = table.convertColumnIndexToModel(fileNameColumnIndex);
             filters.clear();
-            filters.add(RowFilter.regexFilter("(?i)" + txtField.getText(), fileNameColumnIndex));
+            filters.add(RowFilter.regexFilter("(?i)" + txtField.getText(), fileNameIndex));
             filters.add(new RowFilter<>() {
                 public boolean include(Entry<?, ?> entry) {
                     Set<String> extensionsToLookFor = new HashSet<>();
                     popupMenus.forEach(p -> {
                         JPopupMenu popupMenu = (JPopupMenu) p;
                         Component[] checkboxItems = popupMenu.getComponents();
-                        for (Component item : checkboxItems) {
-                            JCheckBoxMenuItem checkboxItem = (JCheckBoxMenuItem) item;
+                        for (int i = 1; i < checkboxItems.length; i++) {
+                            JCheckBoxMenuItem checkboxItem = (JCheckBoxMenuItem) checkboxItems[i];
                             if (checkboxItem.isSelected()) {
                                 extensionsToLookFor.add(checkboxItem.getText());
                             }
                         }
                     });
-                    return extensionsToLookFor.contains(entry.getStringValue(2));
+                    return extensionsToLookFor.contains(entry.getStringValue(extensionColumnIndex));
                 }
             });
             filter(table, filters);
@@ -215,5 +258,9 @@ public class FilterDialog extends JDialog {
             instance = new FilterDialog(table, view);
         }
         return instance;
+    }
+
+    public static void reset() {
+        instance = null;
     }
 }
