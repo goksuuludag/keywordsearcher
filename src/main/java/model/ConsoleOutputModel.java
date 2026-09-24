@@ -1,5 +1,7 @@
 package main.java.model;
 
+import main.java.config.locale.LocaleHandler;
+
 import javax.swing.table.AbstractTableModel;
 import java.lang.reflect.Field;
 import java.nio.file.Path;
@@ -66,6 +68,7 @@ public class ConsoleOutputModel extends AbstractTableModel {
             }
         }
         System.err.println("No such column with name <" + columnName + "> in query result table.");
+        System.err.println(LocaleHandler.getString("error.no.such.column") + ":" + columnName);
         return -1;
     }
 
