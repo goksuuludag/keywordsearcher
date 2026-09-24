@@ -67,7 +67,7 @@ public class FileSearcher {
         }
         return fileList;
     }
-
+    //TODO add cancel search
     public static List<Path> getFilesContainingKeywordParallel(String keyword, String directory) {
         Path path = Paths.get(directory);
         List<Path> fileList = new ArrayList<>();
