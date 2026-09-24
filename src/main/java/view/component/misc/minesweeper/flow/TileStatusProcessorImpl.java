@@ -12,7 +12,30 @@ public class TileStatusProcessorImpl implements TileStatusProcessor {
         if (mineCount == -1) {
             return new TileStatus.Bomb();
         }
+        if(checkIfWon(point.x, point.y,tiles)) {
+            return new TileStatus.WinningTile();
+        }
         return new TileStatus.Surrounding(mineCount);
+    }
+
+    private boolean checkIfWon(int x, int y, Tile[][] tiles) {
+        if(!(tiles[x][y].tileStatus() instanceof TileStatus.Unknown)) {
+            return false;
+        }
+        for (int i = 0; i < tiles.length; i++) {
+            for (int j = 0; j < tiles[i].length; j++) {
+                if(i == x && j == y) {
+                    continue;
+                }
+                if(tiles[i][j].isBomb()) {
+                    continue;
+                }
+                if(tiles[i][j].tileStatus() instanceof TileStatus.Unknown) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
 

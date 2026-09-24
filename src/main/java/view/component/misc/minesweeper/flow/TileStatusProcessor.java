@@ -11,6 +11,7 @@ public interface TileStatusProcessor {
             case TileStatus.Unknown _, TileStatus.Flagged _ -> this.processLeftClick(point, this.handle(point, tiles), tiles);
             case TileStatus.Bomb bomb -> bomb;
             case TileStatus.Surrounding surrounding -> surrounding;
+            case TileStatus.WinningTile winningTile -> winningTile;
         };
     }
     default TileStatus processRightClick(TileStatus tileStatus) {
@@ -19,6 +20,7 @@ public interface TileStatusProcessor {
             case TileStatus.Flagged _ -> new TileStatus.Unknown();
             case TileStatus.Bomb bomb -> bomb;
             case TileStatus.Surrounding surrounding -> surrounding;
+            case TileStatus.WinningTile winningTile -> winningTile;
         };
     }
     TileStatus handle(Point point, Tile[][] tiles);

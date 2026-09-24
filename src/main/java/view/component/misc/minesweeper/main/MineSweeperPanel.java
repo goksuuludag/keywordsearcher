@@ -21,19 +21,19 @@ public class MineSweeperPanel extends JPanel {
         SmileyButton btnReload = new SmileyButton();
         btnReload.addActionListener(l -> {
             removeAll();
-            btnReload.setDead(false);
+            btnReload.reset();
             JPanel pnlHeader = new JPanel();
             pnlHeader.add(btnReload);
             add(pnlHeader, BorderLayout.NORTH);
-            add(initAndGetPnlTiles(width, height, numberOfMines, () -> btnReload.setDead(true)), BorderLayout.CENTER);
+            add(initAndGetPnlTiles(width, height, numberOfMines, btnReload::setDead, btnReload::setWon), BorderLayout.CENTER);
             validate();
             repaint();
         });
         btnReload.doClick();
     }
 
-    private JPanel initAndGetPnlTiles(int width, int height, int numberOfMines, Runnable setDeadRunnable) {
-        MineField mineField = new MineField(width, height, numberOfMines, setDeadRunnable);
+    private JPanel initAndGetPnlTiles(int width, int height, int numberOfMines, Runnable setDeadRunnable, Runnable setSwagRunnable) {
+        MineField mineField = new MineField(width, height, numberOfMines, setDeadRunnable, setSwagRunnable);
 
         JPanel pnlTiles = new JPanel(new BorderLayout(4, 4));
         pnlTiles.setBorder(new EmptyBorder(4, 4, 4, 4));
@@ -57,12 +57,16 @@ public class MineSweeperPanel extends JPanel {
     }
 
     private static class SmileyButton extends JButton {
-        private void setDead(boolean isDead) {
-            if (isDead) {
-                setIcon(ImageRegistry.getIcon("smiley_dead_32.png"));
-            } else {
-                setIcon(ImageRegistry.getIcon("smiley_32.png"));
-            }
+        private void reset() {
+            setIcon(ImageRegistry.getIcon("smiley_32.png"));
+        }
+
+        private void setDead() {
+            setIcon(ImageRegistry.getIcon("smiley_dead_32.png"));
+        }
+
+        private void setWon() {
+            setIcon(ImageRegistry.getIcon("smiley_swag_32.png"));
         }
     }
 }

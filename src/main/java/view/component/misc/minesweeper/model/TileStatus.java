@@ -6,4 +6,5 @@ public sealed interface TileStatus {
     record Flagged() implements TileStatus {}
     record Bomb() implements TileStatus {}
     record Surrounding(int numberOfSurroundingMines) implements TileStatus {}
+    record WinningTile() implements TileStatus {}
 }

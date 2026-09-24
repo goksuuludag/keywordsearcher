@@ -27,18 +27,18 @@ public class MineField {
     private final String BOMB = "*";
     private final String FLAG = Character.toString(0x1F6A9);
 
-    public MineField(int width, int height, int numberOfMines, Runnable setDeadRunnable) {
+    public MineField(int width, int height, int numberOfMines, Runnable setDeadRunnable, Runnable setSwagRunnable) {
         tiles = new Tile[width][height];
         boolean[][] isBomb = initAndGetBombs(width, height, numberOfMines);
-        initTiles(tiles, isBomb, setDeadRunnable);
+        initTiles(tiles, isBomb, setDeadRunnable, setSwagRunnable);
         processor = new TileStatusProcessorImpl();
     }
 
     private boolean[][] initAndGetBombs(int width, int height, int numberOfMines) {
         boolean[][] isBomb = new boolean[width][height];
         int numberOfMinesTemp = numberOfMines;
-        for(int i = 0; i < isBomb.length; i++) {
-            for(int j = 0; j < isBomb[i].length; j++) {
+        for (int i = 0; i < isBomb.length; i++) {
+            for (int j = 0; j < isBomb[i].length; j++) {
                 isBomb[i][j] = numberOfMinesTemp > 0;
                 numberOfMinesTemp--;
             }
@@ -47,7 +47,7 @@ public class MineField {
         return isBomb;
     }
 
-    private void initTiles(Tile[][] tiles, boolean[][] isBomb, Runnable setDeadRunnable) {
+    private void initTiles(Tile[][] tiles, boolean[][] isBomb, Runnable setDeadRunnable, Runnable setSwagRunnable) {
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles[i].length; j++) {
                 JButton button = new JButton();
@@ -62,9 +62,9 @@ public class MineField {
                             return;
                         }
                         if (SwingUtilities.isRightMouseButton(e)) {
-                            processStatus(button, processRightClick(x, y), setDeadRunnable);
+                            processStatus(button, processRightClick(x, y), setDeadRunnable, setSwagRunnable);
                         } else {
-                            processStatus(button, processLeftClick(x, y), setDeadRunnable);
+                            processStatus(button, processLeftClick(x, y), setDeadRunnable, setSwagRunnable);
                             button.setBackground(pressedButtonBg);
                         }
                     }
@@ -74,9 +74,9 @@ public class MineField {
         }
     }
 
-    private void processStatus(JButton button, TileStatus tileStatus, Runnable setDeadRunnable) {
+    private void processStatus(JButton button, TileStatus tileStatus, Runnable setDeadRunnable, Runnable setSwagRunnable) {
         switch (tileStatus) {
-            case TileStatus.Unknown _ -> button.setText("?");
+            case TileStatus.Unknown _ -> button.setText("");
             case TileStatus.Flagged _ -> button.setText(FLAG);
             case TileStatus.Bomb _ -> {
                 button.setText(BOMB);
@@ -90,6 +90,10 @@ public class MineField {
                 } else {
                     button.setText("");
                 }
+            }
+            case TileStatus.WinningTile _ -> {
+                setTilesEnabled(false);
+                setSwagRunnable.run();
             }
         }
     }
