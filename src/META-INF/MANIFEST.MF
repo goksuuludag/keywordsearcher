@@ -1,50 +1,50 @@
 Manifest-Version: 1.0
 Main-Class: main.java.Main
-Class-Path: flatlaf-3.7.2.jar flatlaf-intellij-themes-3.7.2.jar tika-app
- -4.0.0.jar jackson-core-2.22.1.jar jackson-annotations-2.22.jar tika-pi
- pes-file-system-4.0.0.jar jackson-datatype-jsr310-2.22.1.jar xz-1.12.ja
- r dec-0.1.2.jar poi-5.5.1.jar asm-9.10.1.jar jmatio-1.5.jar rome-2.1.0.
- jar txw2-4.0.9.jar pf4j-3.15.0.jar jsoup-1.23.1.jar junrar-8.1.0.jar jw
- arc-0.36.0.jar parso-2.0.14.jar pdfbox-3.0.8.jar dd-plist-1.30.jar font
- box-3.0.8.jar jdom2-2.0.6.1.jar picocli-4.7.7.jar curvesapi-1.08.jar ti
- ka-vlm-4.0.0.jar tika-xmp-4.0.0.jar xmlbeans-5.3.0.jar xmpcore-6.1.11.j
- ar jackcess-4.0.11.jar jaxb-core-4.0.9.jar pdfbox-io-3.0.8.jar poi-ooxm
- l-5.5.1.jar tika-core-4.0.0.jar boilerpipe-1.1.0.jar jhighlight-2.0.0.j
- ar log4j-api-2.26.1.jar rome-utils-2.1.0.jar slf4j-api-2.0.18.jar Spars
- eBitSet-1.3.jar commonmark-0.30.0.jar commons-io-2.22.0.jar java-libpst
- -0.9.3.jar log4j-core-2.26.1.jar commons-cli-1.11.0.jar commons-csv-1.1
- 4.1.jar commons-exec-1.6.0.jar java-semver-0.10.2.jar jaxb-runtime-4.0.
- 9.jar pdfbox-tools-3.0.8.jar tika-ml-core-4.0.0.jar bcpkix-jdk18on-1.85
- .jar bcutil-jdk18on-1.85.jar commons-math3-3.6.1.jar jackson-core-2.22.
- 1.jar jbig2-imageio-3.0.5.jar tika-http-jdk-4.0.0.jar bcjmail-jdk18on-1
- .85.jar commons-codec-1.22.1.jar commons-lang3-3.20.0.jar poi-ooxml-ful
- l-5.5.1.jar poi-scratchpad-5.5.1.jar tika-async-cli-4.0.0.jar tika-eval
- -core-4.0.0.jar tika-inference-4.0.0.jar tika-pipes-api-4.0.0.jar vorbi
- s-java-core-0.8.jar bcprov-jdk18on-1.85.2.jar commons-logging-1.4.0.jar
-  jcl-over-slf4j-2.0.18.jar tika-pipes-core-4.0.0.jar angus-activation-2
- .0.3.jar jackcess-encrypt-4.0.3.jar jai-imageio-core-1.4.0.jar commons-
- compress-1.28.0.jar jackson-databind-2.22.1.jar tika-plugins-core-4.0.0
- .jar apache-mime4j-dom-0.8.14.jar jackson-annotations-2.22.jar log4j-sl
- f4j2-impl-2.26.1.jar tika-ml-junkdetect-4.0.0.jar tika-serialization-4.
- 0.0.jar apache-mime4j-core-0.8.14.jar metadata-extractor-2.21.0.jar com
- mons-collections4-4.6.0.jar jakarta.xml.bind-api-4.0.5.jar istack-commo
- ns-runtime-4.1.2.jar jakarta.activation-api-2.1.4.jar tika-parser-cad-m
- odule-4.0.0.jar tika-parser-ocr-module-4.0.0.jar tika-parser-pdf-module
- -4.0.0.jar tika-parser-pkg-module-4.0.0.jar tika-parser-xml-module-4.0.
- 0.jar tika-pipes-file-system-4.0.0.jar tika-pipes-fork-parser-4.0.0.jar
-  tika-handler-boilerpipe-4.0.0.jar tika-parser-code-module-4.0.0.jar ti
- ka-parser-font-module-4.0.0.jar tika-parser-html-module-4.0.0.jar tika-
- parser-mail-module-4.0.0.jar tika-parser-news-module-4.0.0.jar tika-par
- ser-text-module-4.0.0.jar tika-parser-xmp-commons-4.0.0.jar tika-parser
- -zip-commons-4.0.0.jar jackson-datatype-jsr310-2.22.1.jar tika-langdete
- ct-charsoup-4.0.0.jar tika-parser-apple-module-4.0.0.jar tika-parser-im
- age-module-4.0.0.jar tika-parser-mail-commons-4.0.0.jar jackson-datafor
- mat-smile-2.22.1.jar tika-annotation-processor-4.0.0.jar tika-parser-cr
- ypto-module-4.0.0.jar commonmark-ext-gfm-tables-0.30.0.jar tika-parser-
- digest-commons-4.0.0.jar tika-encoding-detector-html-4.0.0.jar tika-par
- ser-datauri-commons-4.0.0.jar tika-pipes-iterator-commons-4.0.0.jar tik
- a-parser-microsoft-module-4.0.0.jar tika-langdetect-charsoup-core-4.0.0
- .jar tika-parser-audiovideo-module-4.0.0.jar tika-parser-miscoffice-mod
- ule-4.0.0.jar tika-parser-webarchive-module-4.0.0.jar commonmark-ext-gf
- m-strikethrough-0.30.0.jar tika-encoding-detector-mojibuster-4.0.0.jar
+Class-Path: lib/flatlaf-3.7.2.jar lib/flatlaf-intellij-themes-3.7.2.jar lib/tika-app
+ -4.0.0.jar lib/jackson-core-2.22.1.jar lib/jackson-annotations-2.22.jar lib/tika-pi
+ pes-file-system-4.0.0.jar lib/jackson-datatype-jsr310-2.22.1.jar lib/xz-1.12.ja
+ r lib/dec-0.1.2.jar lib/poi-5.5.1.jar lib/asm-9.10.1.jar lib/jmatio-1.5.jar lib/rome-2.1.0.
+ jar lib/txw2-4.0.9.jar lib/pf4j-3.15.0.jar lib/jsoup-1.23.1.jar lib/junrar-8.1.0.jar lib/jw
+ arc-0.36.0.jar lib/parso-2.0.14.jar lib/pdfbox-3.0.8.jar lib/dd-plist-1.30.jar lib/font
+ box-3.0.8.jar lib/jdom2-2.0.6.1.jar lib/picocli-4.7.7.jar lib/curvesapi-1.08.jar lib/ti
+ ka-vlm-4.0.0.jar lib/tika-xmp-4.0.0.jar lib/xmlbeans-5.3.0.jar lib/xmpcore-6.1.11.j
+ ar lib/jackcess-4.0.11.jar lib/jaxb-core-4.0.9.jar lib/pdfbox-io-3.0.8.jar lib/poi-ooxm
+ l-5.5.1.jar lib/tika-core-4.0.0.jar lib/boilerpipe-1.1.0.jar lib/jhighlight-2.0.0.j
+ ar lib/log4j-api-2.26.1.jar lib/rome-utils-2.1.0.jar lib/slf4j-api-2.0.18.jar lib/Spars
+ eBitSet-1.3.jar lib/commonmark-0.30.0.jar lib/commons-io-2.22.0.jar lib/java-libpst
+ -0.9.3.jar lib/log4j-core-2.26.1.jar lib/commons-cli-1.11.0.jar lib/commons-csv-1.1
+ 4.1.jar lib/commons-exec-1.6.0.jar lib/java-semver-0.10.2.jar lib/jaxb-runtime-4.0.
+ 9.jar lib/pdfbox-tools-3.0.8.jar lib/tika-ml-core-4.0.0.jar lib/bcpkix-jdk18on-1.85
+ .jar lib/bcutil-jdk18on-1.85.jar lib/commons-math3-3.6.1.jar lib/jackson-core-2.22.
+ 1.jar lib/jbig2-imageio-3.0.5.jar lib/tika-http-jdk-4.0.0.jar lib/bcjmail-jdk18on-1
+ .85.jar lib/commons-codec-1.22.1.jar lib/commons-lang3-3.20.0.jar lib/poi-ooxml-ful
+ l-5.5.1.jar lib/poi-scratchpad-5.5.1.jar lib/tika-async-cli-4.0.0.jar lib/tika-eval
+ -core-4.0.0.jar lib/tika-inference-4.0.0.jar lib/tika-pipes-api-4.0.0.jar lib/vorbi
+ s-java-core-0.8.jar lib/bcprov-jdk18on-1.85.2.jar lib/commons-logging-1.4.0.jar
+  lib/jcl-over-slf4j-2.0.18.jar lib/tika-pipes-core-4.0.0.jar lib/angus-activation-2
+ .0.3.jar lib/jackcess-encrypt-4.0.3.jar lib/jai-imageio-core-1.4.0.jar lib/commons-
+ compress-1.28.0.jar lib/jackson-databind-2.22.1.jar lib/tika-plugins-core-4.0.0
+ .jar lib/apache-mime4j-dom-0.8.14.jar lib/jackson-annotations-2.22.jar lib/log4j-sl
+ f4j2-impl-2.26.1.jar lib/tika-ml-junkdetect-4.0.0.jar lib/tika-serialization-4.
+ 0.0.jar lib/apache-mime4j-core-0.8.14.jar lib/metadata-extractor-2.21.0.jar lib/com
+ mons-collections4-4.6.0.jar lib/jakarta.xml.bind-api-4.0.5.jar lib/istack-commo
+ ns-runtime-4.1.2.jar lib/jakarta.activation-api-2.1.4.jar lib/tika-parser-cad-m
+ odule-4.0.0.jar lib/tika-parser-ocr-module-4.0.0.jar lib/tika-parser-pdf-module
+ -4.0.0.jar lib/tika-parser-pkg-module-4.0.0.jar lib/tika-parser-xml-module-4.0.
+ 0.jar lib/tika-pipes-file-system-4.0.0.jar lib/tika-pipes-fork-parser-4.0.0.jar
+  lib/tika-handler-boilerpipe-4.0.0.jar lib/tika-parser-code-module-4.0.0.jar lib/ti
+ ka-parser-font-module-4.0.0.jar lib/tika-parser-html-module-4.0.0.jar lib/tika-
+ parser-mail-module-4.0.0.jar lib/tika-parser-news-module-4.0.0.jar lib/tika-par
+ ser-text-module-4.0.0.jar lib/tika-parser-xmp-commons-4.0.0.jar lib/tika-parser
+ -zip-commons-4.0.0.jar lib/jackson-datatype-jsr310-2.22.1.jar lib/tika-langdete
+ ct-charsoup-4.0.0.jar lib/tika-parser-apple-module-4.0.0.jar lib/tika-parser-im
+ age-module-4.0.0.jar lib/tika-parser-mail-commons-4.0.0.jar lib/jackson-datafor
+ mat-smile-2.22.1.jar lib/tika-annotation-processor-4.0.0.jar lib/tika-parser-cr
+ ypto-module-4.0.0.jar lib/commonmark-ext-gfm-tables-0.30.0.jar lib/tika-parser-
+ digest-commons-4.0.0.jar lib/tika-encoding-detector-html-4.0.0.jar lib/tika-par
+ ser-datauri-commons-4.0.0.jar lib/tika-pipes-iterator-commons-4.0.0.jar lib/tik
+ a-parser-microsoft-module-4.0.0.jar lib/tika-langdetect-charsoup-core-4.0.0
+ .jar lib/tika-parser-audiovideo-module-4.0.0.jar lib/tika-parser-miscoffice-mod
+ ule-4.0.0.jar lib/tika-parser-webarchive-module-4.0.0.jar lib/commonmark-ext-gf
+ m-strikethrough-0.30.0.jar lib/tika-encoding-detector-mojibuster-4.0.0.jar
 
