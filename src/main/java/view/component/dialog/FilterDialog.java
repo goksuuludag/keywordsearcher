@@ -38,7 +38,7 @@ public class FilterDialog extends JDialog {
         });
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int width = (int) (screenSize.getWidth() * 0.13);
+        int width = (int) (screenSize.getWidth() * 0.18);
         int height = (int) (screenSize.getHeight() * 0.20);
         setSize(width, height);
         setLocationRelativeTo(view);
@@ -175,15 +175,15 @@ public class FilterDialog extends JDialog {
     private Container getTxtFieldContainer(JTextField txtField) {
         JPanel pnlTxtFieldContainer = new JPanel(new GridBagLayout());
 
-        JLabel lblFilter = new JLabel(LocaleHandler.getString("component.lblFilter"));
-        GridBagConstraints gbcLblFilter = new GridBagConstraints();
-        gbcLblFilter.insets = new Insets(0, 10, 0, 10);
-        gbcLblFilter.fill = GridBagConstraints.HORIZONTAL;
-        gbcLblFilter.anchor = GridBagConstraints.WEST;
-        gbcLblFilter.weightx = 0.0;
-        gbcLblFilter.gridx = 0;
-        gbcLblFilter.gridy = 0;
-        pnlTxtFieldContainer.add(lblFilter, gbcLblFilter);
+        JLabel lblSearch = new JLabel(LocaleHandler.getString("component.lblSearch"));
+        GridBagConstraints gbcLblSearch = new GridBagConstraints();
+        gbcLblSearch.insets = new Insets(0, 10, 0, 10);
+        gbcLblSearch.fill = GridBagConstraints.HORIZONTAL;
+        gbcLblSearch.anchor = GridBagConstraints.WEST;
+        gbcLblSearch.weightx = 0.0;
+        gbcLblSearch.gridx = 0;
+        gbcLblSearch.gridy = 0;
+        pnlTxtFieldContainer.add(lblSearch, gbcLblSearch);
 
         GridBagConstraints gbcTxtField = new GridBagConstraints();
         gbcTxtField.insets = new Insets(0, 10, 0, 10);
@@ -194,15 +194,15 @@ public class FilterDialog extends JDialog {
         gbcTxtField.gridy = 0;
         pnlTxtFieldContainer.add(txtField, gbcTxtField);
 
-        JLabel lblIn = new JLabel(LocaleHandler.getString("component.lblIn"));
-        GridBagConstraints gbcLblIn = new GridBagConstraints();
-        gbcLblIn.insets = new Insets(0, 10, 0, 10);
-        gbcLblIn.fill = GridBagConstraints.HORIZONTAL;
-        gbcLblIn.anchor = GridBagConstraints.WEST;
-        gbcLblIn.weightx = 0.0;
-        gbcLblIn.gridx = 2;
-        gbcLblIn.gridy = 0;
-        pnlTxtFieldContainer.add(lblIn, gbcLblIn);
+        JLabel lblAmong = new JLabel(LocaleHandler.getString("component.lblAmong"));
+        GridBagConstraints gbcLblAmong = new GridBagConstraints();
+        gbcLblAmong.insets = new Insets(0, 10, 0, 10);
+        gbcLblAmong.fill = GridBagConstraints.HORIZONTAL;
+        gbcLblAmong.anchor = GridBagConstraints.WEST;
+        gbcLblAmong.weightx = 0.0;
+        gbcLblAmong.gridx = 2;
+        gbcLblAmong.gridy = 0;
+        pnlTxtFieldContainer.add(lblAmong, gbcLblAmong);
         return pnlTxtFieldContainer;
     }
 
