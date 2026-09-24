@@ -70,6 +70,7 @@ public class MainController {
 
     private void initBtnSearch(JButton btnSearch, QueryResultModel model) {
         btnSearch.addActionListener(l -> {
+            model.clear();
             String keyword = view.getKeyword();
             String directory = view.getDirectory();
             if (keyword == null || keyword.isEmpty()) {
