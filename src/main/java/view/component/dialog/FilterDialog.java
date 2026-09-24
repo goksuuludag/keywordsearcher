@@ -8,10 +8,7 @@ import javax.swing.*;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.*;
 import java.util.List;
 
@@ -30,6 +27,15 @@ public class FilterDialog extends JDialog {
         add(getTxtFieldContainer(txtField), BorderLayout.NORTH);
         add(getMenuContainer(TextFile.getFileExtensionMap(), buttons, popupMenus), BorderLayout.CENTER);
         add(getButtonContainer(table, txtField, popupMenus, filters), BorderLayout.SOUTH);
+
+        addWindowFocusListener(new WindowAdapter() {
+            @Override
+            public void windowLostFocus(WindowEvent e) {
+                for (Component popupMenu : popupMenus) {
+                    popupMenu.setVisible(false);
+                }
+            }
+        });
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int width = (int) (screenSize.getWidth() * 0.13);
@@ -86,9 +92,10 @@ public class FilterDialog extends JDialog {
 
             chkbxFileType.addItemListener(l -> {
                 btnFileType.setEnabled(chkbxFileType.isSelected());
+                popupMenu.setEnabled(chkbxFileType.isSelected());
                 for (Component item : popupMenu.getComponents()) {
                     JCheckBoxMenuItem checkBoxMenuItem = (JCheckBoxMenuItem) item;
-                    checkBoxMenuItem.setSelected(chkbxFileType.isSelected());
+                    checkBoxMenuItem.setEnabled(chkbxFileType.isSelected());
                 }
             });
 
@@ -222,6 +229,9 @@ public class FilterDialog extends JDialog {
                     Set<String> extensionsToLookFor = new HashSet<>();
                     popupMenus.forEach(p -> {
                         JPopupMenu popupMenu = (JPopupMenu) p;
+                        if(!popupMenu.isEnabled()) {
+                            return;
+                        }
                         Component[] checkboxItems = popupMenu.getComponents();
                         for (int i = 1; i < checkboxItems.length; i++) {
                             JCheckBoxMenuItem checkboxItem = (JCheckBoxMenuItem) checkboxItems[i];
@@ -263,4 +273,5 @@ public class FilterDialog extends JDialog {
     public static void reset() {
         instance = null;
     }
+
 }
