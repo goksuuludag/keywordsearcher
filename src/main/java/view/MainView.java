@@ -84,6 +84,7 @@ public class MainView extends JFrame {
 
         JLabel lblSelectDirectory = new JLabel(LocaleHandler.getString("component.lblSelectDirectory"));
         GridBagConstraints gbcLblSelectDirectory = new GridBagConstraints();
+        gbcLblSelectDirectory.insets = new Insets(0, 10, 0, 10);
         gbcLblSelectDirectory.fill = GridBagConstraints.HORIZONTAL;
         gbcLblSelectDirectory.anchor = GridBagConstraints.WEST;
         gbcLblSelectDirectory.weightx = 0.0;
@@ -91,6 +92,7 @@ public class MainView extends JFrame {
         gbcLblSelectDirectory.gridy = 0;
 
         btnChooseDirectory = new JButton(LocaleHandler.getString("component.btnChooseDirectory"));
+        btnChooseDirectory.setFocusable(false);
         GridBagConstraints gbcBtnChooseDirectory = new GridBagConstraints();
         gbcBtnChooseDirectory.insets = new Insets(0, 10, 0, 10);
         gbcBtnChooseDirectory.fill = GridBagConstraints.HORIZONTAL;
@@ -111,6 +113,7 @@ public class MainView extends JFrame {
 
         JLabel lblThen = new JLabel(LocaleHandler.getString("component.lblThen"));
         GridBagConstraints gbcLblThen = new GridBagConstraints();
+        gbcLblThen.insets = new Insets(0, 10, 0, 10);
         gbcLblThen.fill = GridBagConstraints.HORIZONTAL;
         gbcLblThen.anchor = GridBagConstraints.WEST;
         gbcLblThen.weightx = 0.0;
@@ -127,6 +130,7 @@ public class MainView extends JFrame {
         gbcJtfSearchKeywordField.gridy = 0;
 
         btnSearch = new JButton(LocaleHandler.getString("component.btnSearch"));
+        btnSearch.setFocusable(false);
         GridBagConstraints gbcBtnSearch = new GridBagConstraints();
         gbcBtnSearch.insets = new Insets(0, 10, 0, 10);
         gbcBtnSearch.fill = GridBagConstraints.HORIZONTAL;
@@ -137,6 +141,7 @@ public class MainView extends JFrame {
 
         JLabel lblOptionally = new JLabel(LocaleHandler.getString("component.lblOptionally"));
         GridBagConstraints gbcLblOptionally = new GridBagConstraints();
+        gbcLblOptionally.insets = new Insets(0, 10, 0, 10);
         gbcLblOptionally.fill = GridBagConstraints.HORIZONTAL;
         gbcLblOptionally.anchor = GridBagConstraints.WEST;
         gbcLblOptionally.weightx = 0.0;
@@ -144,6 +149,7 @@ public class MainView extends JFrame {
         gbcLblOptionally.gridy = 0;
 
         btnFilter = new JButton(LocaleHandler.getString("component.btnFilter"));
+        btnFilter.setFocusable(false);
         GridBagConstraints gbcBtnFilter = new GridBagConstraints();
         gbcBtnFilter.insets = new Insets(0, 10, 0, 10);
         gbcBtnFilter.fill = GridBagConstraints.HORIZONTAL;
@@ -153,6 +159,7 @@ public class MainView extends JFrame {
         gbcBtnFilter.gridy = 0;
 
         btnRemoveFilter = new JButton(LocaleHandler.getString("component.btnRemoveFilter"));
+        btnRemoveFilter.setFocusable(false);
         GridBagConstraints gbcBtnRemoveFilter = new GridBagConstraints();
         gbcBtnRemoveFilter.insets = new Insets(0, 10, 0, 10);
         gbcBtnRemoveFilter.fill = GridBagConstraints.HORIZONTAL;
