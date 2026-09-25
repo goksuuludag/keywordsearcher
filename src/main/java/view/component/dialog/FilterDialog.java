@@ -116,10 +116,10 @@ public class FilterDialog extends JDialog {
             JCheckBoxMenuItem extensionItem = new JCheckBoxMenuItem(extension);
             extensionItem.setSelected(true);
             extensionItem.addItemListener(l -> {
-                boolean state = ((JCheckBoxMenuItem)popupMenu.getComponents()[1]).isSelected();
+                boolean state = ((JCheckBoxMenuItem) popupMenu.getComponents()[1]).isSelected();
                 for (int i = 1; i < popupMenu.getComponents().length; i++) {
-                    boolean newState = ((JCheckBoxMenuItem)popupMenu.getComponents()[i]).isSelected();
-                    if(!newState) {
+                    boolean newState = ((JCheckBoxMenuItem) popupMenu.getComponents()[i]).isSelected();
+                    if (!newState) {
                         ItemListener listener = selectAllItem.getItemListeners()[0];
                         selectAllItem.removeItemListener(listener);
                         selectAllItem.setSelected(false);
@@ -223,13 +223,15 @@ public class FilterDialog extends JDialog {
         btnAccept.addActionListener(l -> {
             int fileNameIndex = table.convertColumnIndexToModel(fileNameColumnIndex);
             filters.clear();
-            filters.add(RowFilter.regexFilter("(?i)" + txtField.getText(), fileNameIndex));
+            if (txtField.getText() != null && !txtField.getText().isEmpty()) {
+                filters.add(RowFilter.regexFilter("(?i)" + txtField.getText(), fileNameIndex));
+            }
             filters.add(new RowFilter<>() {
                 public boolean include(Entry<?, ?> entry) {
                     Set<String> extensionsToLookFor = new HashSet<>();
                     popupMenus.forEach(p -> {
                         JPopupMenu popupMenu = (JPopupMenu) p;
-                        if(!popupMenu.isEnabled()) {
+                        if (!popupMenu.isEnabled()) {
                             return;
                         }
                         Component[] checkboxItems = popupMenu.getComponents();
@@ -240,7 +242,7 @@ public class FilterDialog extends JDialog {
                             }
                         }
                     });
-                    return extensionsToLookFor.contains(entry.getStringValue(extensionColumnIndex));
+                    return extensionsToLookFor.contains(entry.getStringValue(extensionColumnIndex).toLowerCase());
                 }
             });
             filter(table, filters);

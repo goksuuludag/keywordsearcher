@@ -23,6 +23,9 @@ public class MainView extends JFrame {
     private JButton btnRemoveFilter;
     private JTextField jtfSearchKeywordField;
     private JTextField jtfSearchDirectoryField;
+    private JLabel lblSearchResultCount;
+    private JLabel lblRowCount;
+    private JLabel lblFilesOnDisplayCount;
     private final double[] columnWeights = {0.2, 0.7, 0.1};
 
     public MainView() {
@@ -39,8 +42,99 @@ public class MainView extends JFrame {
         add(pnlHeader, BorderLayout.NORTH);
         JScrollPane scp = new JScrollPane(table);
         add(scp, BorderLayout.CENTER);
+        add(initAndGetFooter(), BorderLayout.SOUTH);
         setSize(width, height);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    private Component initAndGetFooter() {
+        JPanel pnlFooter = new JPanel(new BorderLayout());
+
+        JPanel pnlLblContainer = new JPanel(new GridBagLayout());
+
+        JLabel lblSearchResults = new JLabel(LocaleHandler.getString("component.lblSearchResults") + ":");
+        GridBagConstraints gbcLblSearchResults = new GridBagConstraints();
+        gbcLblSearchResults.insets = new Insets(0, 10, 0, 10);
+        gbcLblSearchResults.fill = GridBagConstraints.HORIZONTAL;
+        gbcLblSearchResults.anchor = GridBagConstraints.WEST;
+        gbcLblSearchResults.weightx = 0.0;
+        gbcLblSearchResults.gridx = 0;
+        gbcLblSearchResults.gridy = 0;
+
+        lblSearchResultCount = new JLabel();
+        GridBagConstraints gbcLblSearchResultCount = new GridBagConstraints();
+        gbcLblSearchResultCount.insets = new Insets(0, 10, 0, 10);
+        gbcLblSearchResultCount.fill = GridBagConstraints.HORIZONTAL;
+        gbcLblSearchResultCount.anchor = GridBagConstraints.WEST;
+        gbcLblSearchResultCount.weightx = 0.0;
+        gbcLblSearchResultCount.gridx = 1;
+        gbcLblSearchResultCount.gridy = 0;
+
+        JLabel lblItemsFound = new JLabel(LocaleHandler.getString("component.lblItemsFound") + ",");
+        GridBagConstraints gbcLblItemsFound = new GridBagConstraints();
+        gbcLblItemsFound.insets = new Insets(0, 10, 0, 10);
+        gbcLblItemsFound.fill = GridBagConstraints.HORIZONTAL;
+        gbcLblItemsFound.anchor = GridBagConstraints.WEST;
+        gbcLblItemsFound.weightx = 0.0;
+        gbcLblItemsFound.gridx = 2;
+        gbcLblItemsFound.gridy = 0;
+
+        JLabel lblCurrently = new JLabel(LocaleHandler.getString("component.lblCurrently"));
+        GridBagConstraints gbcLblCurrently = new GridBagConstraints();
+        gbcLblCurrently.insets = new Insets(0, 10, 0, 10);
+        gbcLblCurrently.fill = GridBagConstraints.HORIZONTAL;
+        gbcLblCurrently.anchor = GridBagConstraints.WEST;
+        gbcLblCurrently.weightx = 0.0;
+        gbcLblCurrently.gridx = 3;
+        gbcLblCurrently.gridy = 0;
+
+        lblFilesOnDisplayCount = new JLabel();
+        GridBagConstraints gbcLblFilesOnDisplayCount = new GridBagConstraints();
+        gbcLblFilesOnDisplayCount.insets = new Insets(0, 10, 0, 10);
+        gbcLblFilesOnDisplayCount.fill = GridBagConstraints.HORIZONTAL;
+        gbcLblFilesOnDisplayCount.anchor = GridBagConstraints.WEST;
+        gbcLblFilesOnDisplayCount.weightx = 0.0;
+        gbcLblFilesOnDisplayCount.gridx = 4;
+        gbcLblFilesOnDisplayCount.gridy = 0;
+
+        JLabel lblFilesOnDisplay = new JLabel(LocaleHandler.getString("component.lblFilesOnDisplay"));
+        GridBagConstraints gbcLblFilesOnDisplay = new GridBagConstraints();
+        gbcLblFilesOnDisplay.insets = new Insets(0, 10, 0, 10);
+        gbcLblFilesOnDisplay.fill = GridBagConstraints.HORIZONTAL;
+        gbcLblFilesOnDisplay.anchor = GridBagConstraints.WEST;
+        gbcLblFilesOnDisplay.weightx = 1.0;
+        gbcLblFilesOnDisplay.gridx = 5;
+        gbcLblFilesOnDisplay.gridy = 0;
+
+        JLabel lblRow = new JLabel(LocaleHandler.getString("component.lblRow") + ":");
+        GridBagConstraints gbcLblRow= new GridBagConstraints();
+        gbcLblRow.insets = new Insets(0, 10, 0, 10);
+        gbcLblRow.fill = GridBagConstraints.HORIZONTAL;
+        gbcLblRow.anchor = GridBagConstraints.EAST;
+        gbcLblRow.weightx = 0.0;
+        gbcLblRow.gridx = 6;
+        gbcLblRow.gridy = 0;
+
+        lblRowCount = new JLabel();
+        GridBagConstraints gbcLblRowCount= new GridBagConstraints();
+        gbcLblRowCount.insets = new Insets(0, 10, 0, 10);
+        gbcLblRowCount.fill = GridBagConstraints.HORIZONTAL;
+        gbcLblRowCount.anchor = GridBagConstraints.EAST;
+        gbcLblRowCount.weightx = 0.0;
+        gbcLblRowCount.gridx = 7;
+        gbcLblRowCount.gridy = 0;
+
+        pnlFooter.add(pnlLblContainer, BorderLayout.CENTER);
+        pnlLblContainer.add(lblSearchResults, gbcLblSearchResults);
+        pnlLblContainer.add(lblSearchResultCount, gbcLblSearchResultCount);
+        pnlLblContainer.add(lblItemsFound, gbcLblItemsFound);
+        pnlLblContainer.add(lblRow, gbcLblRow);
+        pnlLblContainer.add(lblRowCount, gbcLblRowCount);
+        pnlLblContainer.add(lblCurrently, gbcLblCurrently);
+        pnlLblContainer.add(lblFilesOnDisplayCount, gbcLblFilesOnDisplayCount);
+        pnlLblContainer.add(lblFilesOnDisplay, gbcLblFilesOnDisplay);
+
+        return pnlFooter;
     }
 
     private void initFonts() {
@@ -237,4 +331,10 @@ public class MainView extends JFrame {
     public void setDirectory(String directory) {
         jtfSearchDirectoryField.setText(directory);
     }
+
+    public JLabel getLblSearchResultCount() { return lblSearchResultCount; }
+
+    public JLabel getLblRowCount() { return lblRowCount; }
+
+    public JLabel getLblFilesOnDisplayCount() { return lblFilesOnDisplayCount; }
 }

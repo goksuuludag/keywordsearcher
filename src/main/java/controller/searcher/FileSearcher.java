@@ -6,6 +6,7 @@ import main.java.controller.searcher.strategy.DocFileSearchingStrategy;
 import main.java.controller.searcher.strategy.DocxFileSearchingStrategy;
 import main.java.controller.searcher.strategy.PlainTextFileSearchingStrategy;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -24,12 +25,15 @@ public class FileSearcher {
     }
     private FileSearcher() {}
 
-    public static List<Path> getFilesContainingKeyword(String keyword, String directory) {
+    public static List<Path> getFilesContainingKeyword(String keyword, String directory, Boolean isCancelled) {
         Path path = Paths.get(directory);
         List<Path> fileList = new ArrayList<>();
         SimpleFileVisitor<Path> simpleFileVisitor = new SimpleFileVisitor<>() {
             @Override
             public FileVisitResult visitFile(Path p, BasicFileAttributes attrs) throws IOException {
+                if(isCancelled) {
+                    return FileVisitResult.TERMINATE;
+                }
                 if (!Files.isReadable(p) || !Files.isRegularFile(p)) {
                     return FileVisitResult.CONTINUE;
                 }
@@ -68,7 +72,7 @@ public class FileSearcher {
         return fileList;
     }
     //TODO add cancel search
-    public static List<Path> getFilesContainingKeywordParallel(String keyword, String directory) {
+    public static List<Path> getFilesContainingKeywordParallel(String keyword, String directory, boolean[] isCancelled) {
         Path path = Paths.get(directory);
         List<Path> fileList = new ArrayList<>();
         try(Stream<Path> stream = Files.list(path).filter(Files::isDirectory)) {
@@ -79,6 +83,9 @@ public class FileSearcher {
                     Files.walkFileTree(dir, new SimpleFileVisitor<Path>() {
                         @Override
                         public FileVisitResult visitFile(Path p, BasicFileAttributes attrs) {
+                            if(isCancelled[0]) {
+                                return FileVisitResult.TERMINATE;
+                            }
                             if (!Files.isReadable(p) || !Files.isRegularFile(p)) {
                                 return FileVisitResult.CONTINUE;
                             }
