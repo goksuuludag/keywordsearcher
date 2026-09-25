@@ -61,6 +61,7 @@ public class MainController {
         });
         table.addMouseMotionListener(new MouseMotionAdapter() {
             private int rowAtPoint;
+
             @Override
             public void mouseMoved(MouseEvent e) {
                 if (table.rowAtPoint(e.getPoint()) == -1) {
@@ -68,7 +69,7 @@ public class MainController {
                 }
                 Point point = e.getPoint();
                 int row = table.rowAtPoint(point);
-                if(rowAtPoint == row) {
+                if (rowAtPoint == row) {
                     return;
                 }
                 rowAtPoint = row;
@@ -112,7 +113,7 @@ public class MainController {
         btnSearch.addActionListener(l -> {
             model.clear();
             view.getTable().setRowSorter(null);
-            FilterDialog.getInstance(view.getTable(),view).dispose();
+            FilterDialog.getInstance(view.getTable(), view).dispose();
             FilterDialog.reset();
             view.getLblSearchResultCount().setText("");
             view.getLblRowCount().setText("");
@@ -130,13 +131,10 @@ public class MainController {
                 final ConsoleDialog dialog = new ConsoleDialog();
                 boolean[] isCancelled = dialog.isCancelled();
                 dialog.showDialog();
-                List<Path> fileList = FileSearcher.getFilesContainingKeywordParallel(keyword, directory, isCancelled);
-                Set<String> extensions = new HashSet<>();
-
+                List<Path> fileList = FileSearcher.getFilesContainingKeywordParallel(keyword, directory, isCancelled, dialog.getTxtAreaCurrentFileName());
                 for (Path filePath : fileList) {
                     String fileName = filePath.getFileName().toString();
                     String extension = TextFile.getExtension(filePath);
-                    extensions.add(extension);
                     model.addToList(fileName, filePath, extension);
                 }
                 SwingUtilities.invokeLater(model::fireTableDataChanged);
