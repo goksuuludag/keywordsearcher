@@ -10,14 +10,21 @@ import main.java.view.component.dialog.ConsoleDialog;
 import main.java.view.component.dialog.FilterDialog;
 
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 public class MainController {
@@ -36,6 +43,7 @@ public class MainController {
         QueryResultModel model = (QueryResultModel) view.getTable().getModel();
 
         table.addMouseListener(new MouseAdapter() {
+            @Override
             public void mousePressed(MouseEvent mouseEvent) {
                 if (mouseEvent.getClickCount() < 2 || table.getSelectedRow() == -1 || table.rowAtPoint(mouseEvent.getPoint()) == -1) {
                     return;
@@ -49,9 +57,41 @@ public class MainController {
                 } catch (IOException e) {
                     System.err.println(LocaleHandler.getString("error.viewing.in.file.explorer"));
                 }
-
             }
         });
+        table.addMouseMotionListener(new MouseMotionAdapter() {
+            private int rowAtPoint;
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                if (table.rowAtPoint(e.getPoint()) == -1) {
+                    return;
+                }
+                Point point = e.getPoint();
+                int row = table.rowAtPoint(point);
+                if(rowAtPoint == row) {
+                    return;
+                }
+                rowAtPoint = row;
+                view.getLblRowCount().setText(String.valueOf(rowAtPoint + 1));
+            }
+        });
+
+        table.addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                int rowCount = table.getRowCount();
+                view.getLblFilesOnDisplayCount().setText(String.valueOf(rowCount));
+            }
+        });
+        table.getModel().addTableModelListener(new TableModelListener() {
+            @Override
+            public void tableChanged(TableModelEvent e) {
+                int rowCount = table.getRowCount();
+                view.getLblFilesOnDisplayCount().setText(String.valueOf(rowCount));
+            }
+        });
+
+
     }
 
     private void initBtnFilter(JButton btnFilter) {
@@ -71,6 +111,11 @@ public class MainController {
     private void initBtnSearch(JButton btnSearch, QueryResultModel model) {
         btnSearch.addActionListener(l -> {
             model.clear();
+            view.getTable().setRowSorter(null);
+            FilterDialog.getInstance(view.getTable(),view).dispose();
+            FilterDialog.reset();
+            view.getLblSearchResultCount().setText("");
+            view.getLblRowCount().setText("");
             String keyword = view.getKeyword();
             String directory = view.getDirectory();
             if (keyword == null || keyword.isEmpty()) {
@@ -83,14 +128,19 @@ public class MainController {
             }
             CompletableFuture.runAsync(() -> {
                 final ConsoleDialog dialog = new ConsoleDialog();
+                boolean[] isCancelled = dialog.isCancelled();
                 dialog.showDialog();
-                List<Path> fileList = FileSearcher.getFilesContainingKeywordParallel(keyword, directory);
+                List<Path> fileList = FileSearcher.getFilesContainingKeywordParallel(keyword, directory, isCancelled);
+                Set<String> extensions = new HashSet<>();
+
                 for (Path filePath : fileList) {
                     String fileName = filePath.getFileName().toString();
                     String extension = TextFile.getExtension(filePath);
+                    extensions.add(extension);
                     model.addToList(fileName, filePath, extension);
                 }
                 SwingUtilities.invokeLater(model::fireTableDataChanged);
+                view.getLblSearchResultCount().setText(String.valueOf(fileList.size()));
                 dialog.fireSearchComplete();
             });
         });

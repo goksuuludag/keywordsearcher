@@ -28,6 +28,7 @@ public class ConsoleDialog extends JDialog {
     private JLabel lblCig;
     private JLabel lblDone;
     private final JButton btnClose;
+    private boolean[] isCancelled;
 
     // TODO cancel search could be implemented
     public ConsoleDialog() {
@@ -36,6 +37,7 @@ public class ConsoleDialog extends JDialog {
         setModal(true);
         setLayout(new BorderLayout());
 
+        isCancelled = new boolean[]{false};
         tableModel = new ConsoleOutputModel();
         logTable = initAndGetLogTable(width, tableModel);
         btnClose = getBtnClose();
@@ -128,9 +130,9 @@ public class ConsoleDialog extends JDialog {
 
     private JButton getBtnClose() {
         JButton btnClose = new JButton(LocaleHandler.getString("component.btnClose"));
-        btnClose.setEnabled(false);
         btnClose.addActionListener(l -> {
             System.setErr(originalErr);
+            isCancelled[0] = true;
             dispose();
         });
         return btnClose;
@@ -156,7 +158,6 @@ public class ConsoleDialog extends JDialog {
         ImageIcon scaledIcon = ImageRegistry.getScaledIcon("cig2_lastFrame.png", 90, 90);
         lblCig.setIcon(scaledIcon);
         lblDone.setVisible(true);
-        btnClose.setEnabled(true);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         System.setErr(originalErr);
         consoleBufferWorker.cancel(true);
@@ -177,6 +178,10 @@ public class ConsoleDialog extends JDialog {
             setVisible(true);
             setLocationRelativeTo(null);
         }
+    }
+
+    public boolean[] isCancelled() {
+        return isCancelled;
     }
     // TODO custom swing worker with dependency injection so no more global jtable, tablemodel and all that
     private final SwingWorker<Void, ConsoleOutput> consoleBufferWorker = new SwingWorker<>() {
