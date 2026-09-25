@@ -80,6 +80,18 @@ public class ConsoleDialog extends JDialog {
 
     private Component getInfoPnl(JPanel pnlRecreation, CardLayout cardLayout) {
         JPanel pnlInfo = new JPanel(new GridBagLayout());
+
+        JPanel pnlRecreationHeaderContainer = new JPanel(new GridBagLayout());
+        GridBagConstraints gbcPnlRecreationHeaderContainer = new GridBagConstraints();
+        gbcPnlRecreationHeaderContainer.fill = GridBagConstraints.HORIZONTAL;
+        gbcPnlRecreationHeaderContainer.anchor = GridBagConstraints.WEST;
+        gbcPnlRecreationHeaderContainer.weightx = 1.0;
+        gbcPnlRecreationHeaderContainer.weighty = 0.0;
+        gbcPnlRecreationHeaderContainer.gridx = 0;
+        gbcPnlRecreationHeaderContainer.gridy = 0;
+
+        pnlInfo.add(pnlRecreationHeaderContainer, gbcPnlRecreationHeaderContainer);
+
         JLabel lblPleaseWait = new JLabel(LocaleHandler.getString("component.lblPleaseWait"));
         GridBagConstraints gbcLblPleaseWait = new GridBagConstraints();
         gbcLblPleaseWait.insets = new Insets(0, 10, 0, 10);
@@ -89,18 +101,18 @@ public class ConsoleDialog extends JDialog {
         gbcLblPleaseWait.weighty = 0.0;
         gbcLblPleaseWait.gridx = 0;
         gbcLblPleaseWait.gridy = 0;
-        pnlInfo.add(lblPleaseWait, gbcLblPleaseWait);
+        pnlRecreationHeaderContainer.add(lblPleaseWait, gbcLblPleaseWait);
 
         JButton btnRecreation = initAndGetBtnRecreation(pnlRecreation, cardLayout);
         GridBagConstraints gbcBtnRecreation = new GridBagConstraints();
         gbcBtnRecreation.insets = new Insets(0, 10, 0, 10);
         gbcBtnRecreation.fill = GridBagConstraints.NONE;
         gbcBtnRecreation.anchor = GridBagConstraints.WEST;
-        gbcBtnRecreation.weightx = 0.1;
+        gbcBtnRecreation.weightx = 0.0;
         gbcBtnRecreation.weighty = 0.0;
         gbcBtnRecreation.gridx = 1;
         gbcBtnRecreation.gridy = 0;
-        pnlInfo.add(btnRecreation, gbcBtnRecreation);
+        pnlRecreationHeaderContainer.add(btnRecreation, gbcBtnRecreation);
 
         JLabel lblCurrentlyReadingFile = new JLabel(LocaleHandler.getString("component.lblCurrentlyReadingFile") + ":");
         GridBagConstraints gbcLblCurrentlyReadingFile = new GridBagConstraints();
@@ -118,11 +130,12 @@ public class ConsoleDialog extends JDialog {
         txtAreaCurrentFileName.setWrapStyleWord(true);
         txtAreaCurrentFileName.setOpaque(true);
         txtAreaCurrentFileName.setEditable(false);
+        txtAreaCurrentFileName.setRows(3);
         GridBagConstraints gbcTxtAreaCurrentFileName = new GridBagConstraints();
         gbcTxtAreaCurrentFileName.insets = new Insets(0, 10, 0, 10);
-        gbcTxtAreaCurrentFileName.fill = GridBagConstraints.NONE;
+        gbcTxtAreaCurrentFileName.fill = GridBagConstraints.HORIZONTAL;
         gbcTxtAreaCurrentFileName.anchor = GridBagConstraints.WEST;
-        gbcTxtAreaCurrentFileName.weightx = 0.0;
+        gbcTxtAreaCurrentFileName.weightx = 1.0;
         gbcTxtAreaCurrentFileName.weighty = 0.0;
         gbcTxtAreaCurrentFileName.gridx = 0;
         gbcTxtAreaCurrentFileName.gridy = 2;
@@ -146,10 +159,10 @@ public class ConsoleDialog extends JDialog {
         gbcLblCig.insets = new Insets(0, 10, 0, 10);
         gbcLblCig.fill = GridBagConstraints.HORIZONTAL;
         gbcLblCig.anchor = GridBagConstraints.EAST;
-        gbcLblCig.weightx = 0.3;
+        gbcLblCig.weightx = 1.0;
         gbcLblCig.gridx = 2;
         gbcLblCig.gridy = 0;
-        pnlInfo.add(lblCig, gbcLblCig);
+        pnlRecreationHeaderContainer.add(lblCig, gbcLblCig);
 
         return pnlInfo;
     }
@@ -192,7 +205,7 @@ public class ConsoleDialog extends JDialog {
     public void showDialog() {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int width = (int) (screenSize.getWidth() * 0.35);
-        int height = (int) (screenSize.getHeight() * 0.40);
+        int height = (int) (screenSize.getHeight() * 0.50);
         if (!SwingUtilities.isEventDispatchThread()) {
             SwingUtilities.invokeLater(() -> {
                 setSize(width, height);
