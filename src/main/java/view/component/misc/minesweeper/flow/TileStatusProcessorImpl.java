@@ -2,6 +2,7 @@ package main.java.view.component.misc.minesweeper.flow;
 
 import main.java.view.component.misc.minesweeper.model.Tile;
 import main.java.view.component.misc.minesweeper.model.TileStatus;
+
 import java.awt.*;
 
 public class TileStatusProcessorImpl implements TileStatusProcessor {
@@ -12,25 +13,27 @@ public class TileStatusProcessorImpl implements TileStatusProcessor {
         if (mineCount == -1) {
             return new TileStatus.Bomb();
         }
-        if(checkIfWon(point.x, point.y,tiles)) {
+        if (checkIfWon(point.x, point.y, tiles)) {
             return new TileStatus.WinningTile();
         }
         return new TileStatus.Surrounding(mineCount);
     }
-
+    //TODO fix the early wins
     private boolean checkIfWon(int x, int y, Tile[][] tiles) {
-        if(!(tiles[x][y].tileStatus() instanceof TileStatus.Unknown)) {
+        TileStatus status = tiles[x][y].tileStatus();
+        if (!(status instanceof TileStatus.Unknown || status instanceof TileStatus.Flagged)) {
             return false;
         }
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles[i].length; j++) {
-                if(i == x && j == y) {
+                if (i == x && j == y) {
                     continue;
                 }
-                if(tiles[i][j].isBomb()) {
+                if (tiles[i][j].isBomb()) {
                     continue;
                 }
-                if(tiles[i][j].tileStatus() instanceof TileStatus.Unknown) {
+                TileStatus statusTemp = tiles[i][j].tileStatus();
+                if (statusTemp instanceof TileStatus.Unknown || statusTemp instanceof TileStatus.Flagged) {
                     return false;
                 }
             }
