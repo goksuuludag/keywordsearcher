@@ -6,6 +6,7 @@ import main.java.controller.searcher.strategy.DocFileSearchingStrategy;
 import main.java.controller.searcher.strategy.DocxFileSearchingStrategy;
 import main.java.controller.searcher.strategy.PlainTextFileSearchingStrategy;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
@@ -72,7 +73,7 @@ public class FileSearcher {
         return fileList;
     }
     //TODO add cancel search
-    public static List<Path> getFilesContainingKeywordParallel(String keyword, String directory, boolean[] isCancelled) {
+    public static List<Path> getFilesContainingKeywordParallel(String keyword, String directory, boolean[] isCancelled, JTextArea txtAreaCurrentFileName) {
         Path path = Paths.get(directory);
         List<Path> fileList = new ArrayList<>();
         try(Stream<Path> stream = Files.list(path).filter(Files::isDirectory)) {
@@ -99,6 +100,7 @@ public class FileSearcher {
                             if(fileType == null) {
                                 return FileVisitResult.CONTINUE;
                             }
+                            txtAreaCurrentFileName.setText(p.toString());
                             FileSearchingContext searchingContext = new FileSearchingContext(strategyMap.get(fileType));
                             if (searchingContext.search(p, keyword)) {
                                 found.add(p);

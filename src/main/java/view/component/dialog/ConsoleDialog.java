@@ -1,6 +1,5 @@
 package main.java.view.component.dialog;
 
-import main.java.config.app.ConfigHandler;
 import main.java.config.locale.LocaleHandler;
 import main.java.model.ConsoleOutputModel;
 import main.java.model.ConsoleOutputModel.*;
@@ -28,9 +27,10 @@ public class ConsoleDialog extends JDialog {
     private JLabel lblCig;
     private JLabel lblDone;
     private final JButton btnClose;
-    private boolean[] isCancelled;
+    private final boolean[] isCancelled;
+    private JTextArea txtAreaCurrentFileName;
 
-    // TODO cancel search could be implemented
+    // TODO fix the textarea placing and how it gets the file names!!
     public ConsoleDialog() {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int width = (int) (screenSize.getWidth() * 0.35);
@@ -91,16 +91,42 @@ public class ConsoleDialog extends JDialog {
         gbcLblPleaseWait.gridy = 0;
         pnlInfo.add(lblPleaseWait, gbcLblPleaseWait);
 
-        Component cmbRecreation = initAndGetCmbRecreation(pnlRecreation, cardLayout);
-        GridBagConstraints gbcCmbRecreation = new GridBagConstraints();
-        gbcCmbRecreation.insets = new Insets(0, 10, 0, 10);
-        gbcCmbRecreation.fill = GridBagConstraints.NONE;
-        gbcCmbRecreation.anchor = GridBagConstraints.WEST;
-        gbcCmbRecreation.weightx = 0.1;
-        gbcCmbRecreation.weighty = 0.0;
-        gbcCmbRecreation.gridx = 1;
-        gbcCmbRecreation.gridy = 0;
-        pnlInfo.add(cmbRecreation, gbcCmbRecreation);
+        JButton btnRecreation = initAndGetBtnRecreation(pnlRecreation, cardLayout);
+        GridBagConstraints gbcBtnRecreation = new GridBagConstraints();
+        gbcBtnRecreation.insets = new Insets(0, 10, 0, 10);
+        gbcBtnRecreation.fill = GridBagConstraints.NONE;
+        gbcBtnRecreation.anchor = GridBagConstraints.WEST;
+        gbcBtnRecreation.weightx = 0.1;
+        gbcBtnRecreation.weighty = 0.0;
+        gbcBtnRecreation.gridx = 1;
+        gbcBtnRecreation.gridy = 0;
+        pnlInfo.add(btnRecreation, gbcBtnRecreation);
+
+        JLabel lblCurrentlyReadingFile = new JLabel(LocaleHandler.getString("component.lblCurrentlyReadingFile") + ":");
+        GridBagConstraints gbcLblCurrentlyReadingFile = new GridBagConstraints();
+        gbcLblCurrentlyReadingFile.insets = new Insets(0, 10, 0, 10);
+        gbcLblCurrentlyReadingFile.fill = GridBagConstraints.NONE;
+        gbcLblCurrentlyReadingFile.anchor = GridBagConstraints.WEST;
+        gbcLblCurrentlyReadingFile.weightx = 0.0;
+        gbcLblCurrentlyReadingFile.weighty = 0.0;
+        gbcLblCurrentlyReadingFile.gridx = 0;
+        gbcLblCurrentlyReadingFile.gridy = 1;
+        pnlInfo.add(lblCurrentlyReadingFile, gbcLblCurrentlyReadingFile);
+
+        txtAreaCurrentFileName = new JTextArea();
+        txtAreaCurrentFileName.setLineWrap(true);
+        txtAreaCurrentFileName.setWrapStyleWord(true);
+        txtAreaCurrentFileName.setOpaque(true);
+        txtAreaCurrentFileName.setEditable(false);
+        GridBagConstraints gbcTxtAreaCurrentFileName = new GridBagConstraints();
+        gbcTxtAreaCurrentFileName.insets = new Insets(0, 10, 0, 10);
+        gbcTxtAreaCurrentFileName.fill = GridBagConstraints.NONE;
+        gbcTxtAreaCurrentFileName.anchor = GridBagConstraints.WEST;
+        gbcTxtAreaCurrentFileName.weightx = 0.0;
+        gbcTxtAreaCurrentFileName.weighty = 0.0;
+        gbcTxtAreaCurrentFileName.gridx = 0;
+        gbcTxtAreaCurrentFileName.gridy = 2;
+        pnlInfo.add(txtAreaCurrentFileName, gbcTxtAreaCurrentFileName);
 
         lblDone = new JLabel(LocaleHandler.getString("component.lblDone"));
         GridBagConstraints gbcLblDone = new GridBagConstraints();
@@ -110,7 +136,7 @@ public class ConsoleDialog extends JDialog {
         gbcLblDone.weightx = 0.0;
         gbcLblDone.weighty = 0.0;
         gbcLblDone.gridx = 0;
-        gbcLblDone.gridy = 2;
+        gbcLblDone.gridy = 3;
         lblDone.setVisible(false);
         pnlInfo.add(lblDone, gbcLblDone);
 
@@ -138,7 +164,7 @@ public class ConsoleDialog extends JDialog {
         return btnClose;
     }
 
-    private Component initAndGetCmbRecreation(JPanel pnlRecreation, CardLayout cardLayout) {
+    private JButton initAndGetBtnRecreation(JPanel pnlRecreation, CardLayout cardLayout) {
         JButton btnClickMe = new JButton(LocaleHandler.getString("component.btnClickMe"));
         btnClickMe.addActionListener(l -> cardLayout.next(pnlRecreation));
         return btnClickMe;
@@ -183,6 +209,11 @@ public class ConsoleDialog extends JDialog {
     public boolean[] isCancelled() {
         return isCancelled;
     }
+
+    public JTextArea getTxtAreaCurrentFileName() {
+        return txtAreaCurrentFileName;
+    }
+
     // TODO custom swing worker with dependency injection so no more global jtable, tablemodel and all that
     private final SwingWorker<Void, ConsoleOutput> consoleBufferWorker = new SwingWorker<>() {
         @Override

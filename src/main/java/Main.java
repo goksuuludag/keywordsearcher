@@ -24,7 +24,7 @@ public class Main {
         } else {
             final String keyword = args[0];
             final String directory = args[1];
-            List<Path> fileList = FileSearcher.getFilesContainingKeywordParallel(keyword, directory, new boolean[]{false});
+            List<Path> fileList = FileSearcher.getFilesContainingKeywordParallel(keyword, directory, new boolean[]{false}, new JTextArea());
             try (FileWriter fileWriter = new FileWriter("./" + "search_results_for_" + keyword.toUpperCase() + ".txt");
                  BufferedWriter writer = new BufferedWriter(fileWriter)) {
                 for (Path filePath : fileList) {
