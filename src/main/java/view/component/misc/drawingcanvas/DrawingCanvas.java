@@ -14,11 +14,13 @@ public class DrawingCanvas extends JPanel {
 
     public DrawingCanvas() {
         pointsList.add(new ArrayList<>()); // get this out of the way
+        setLayout(new BorderLayout());
         add(initAndGetHeader(), BorderLayout.NORTH);
         add(initAndGetCanvas(), BorderLayout.CENTER);
     }
 
-    private Component initAndGetCanvas() {
+    private JPanel initAndGetCanvas() {
+
         JPanel canvas = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -35,10 +37,6 @@ public class DrawingCanvas extends JPanel {
                         g2d.drawLine(p1.x, p1.y, p2.x, p2.y);
                     }
                 }
-            }
-            @Override
-            public Dimension getPreferredSize() {
-                return new Dimension(1000, 1000);
             }
         };
         canvas.setBackground(Color.WHITE);
