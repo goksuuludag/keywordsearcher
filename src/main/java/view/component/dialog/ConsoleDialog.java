@@ -24,6 +24,8 @@ public class ConsoleDialog extends JDialog {
     private final PrintStream originalErr = System.err;
     private final JTable logTable;
     private final ConsoleOutputModel tableModel;
+    private final double widthWeight = 0.5;
+    private final double widthHeight = 0.6;
     private JLabel lblCig;
     private JLabel lblDone;
     private final JButton btnClose;
@@ -33,7 +35,7 @@ public class ConsoleDialog extends JDialog {
     // TODO fix the textarea placing and how it gets the file names!!
     public ConsoleDialog() {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int width = (int) (screenSize.getWidth() * 0.35);
+        int width = (int) (screenSize.getWidth() * widthWeight);
         setModal(true);
         setLayout(new BorderLayout());
 
@@ -204,8 +206,8 @@ public class ConsoleDialog extends JDialog {
 
     public void showDialog() {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int width = (int) (screenSize.getWidth() * 0.35);
-        int height = (int) (screenSize.getHeight() * 0.50);
+        int width = (int) (screenSize.getWidth() * widthWeight);
+        int height = (int) (screenSize.getHeight() * widthHeight);
         if (!SwingUtilities.isEventDispatchThread()) {
             SwingUtilities.invokeLater(() -> {
                 setSize(width, height);
