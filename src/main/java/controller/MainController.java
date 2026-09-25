@@ -43,6 +43,8 @@ public class MainController {
         QueryResultModel model = (QueryResultModel) view.getTable().getModel();
 
         table.addMouseListener(new MouseAdapter() {
+            private int rowAtPoint;
+
             @Override
             public void mousePressed(MouseEvent mouseEvent) {
                 if (mouseEvent.getClickCount() < 2 || table.getSelectedRow() == -1 || table.rowAtPoint(mouseEvent.getPoint()) == -1) {
@@ -58,23 +60,41 @@ public class MainController {
                     System.err.println(LocaleHandler.getString("error.viewing.in.file.explorer"));
                 }
             }
-        });
-        table.addMouseMotionListener(new MouseMotionAdapter() {
-            private int rowAtPoint;
 
             @Override
-            public void mouseMoved(MouseEvent e) {
-                if (table.rowAtPoint(e.getPoint()) == -1) {
-                    return;
-                }
+            public void mouseExited(MouseEvent e) {
+                rowAtPoint = Integer.MIN_VALUE;
+                view.getLblRowCount().setText("");
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
                 Point point = e.getPoint();
                 int row = table.rowAtPoint(point);
                 if (rowAtPoint == row) {
                     return;
                 }
                 rowAtPoint = row;
-                view.getLblRowCount().setText(String.valueOf(rowAtPoint + 1));
+                String rowCountStr = rowAtPoint == -1 ? "" : String.valueOf(rowAtPoint + 1);
+                view.getLblRowCount().setText(rowCountStr);
             }
+        });
+        table.addMouseMotionListener(new MouseMotionAdapter() {
+            private int rowAtPoint;
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                Point point = e.getPoint();
+                int row = table.rowAtPoint(point);
+                if (rowAtPoint == row) {
+                    return;
+                }
+                rowAtPoint = row;
+                String rowCountStr = rowAtPoint == -1 ? "" : String.valueOf(rowAtPoint + 1);
+                view.getLblRowCount().setText(rowCountStr);
+            }
+
+
         });
 
         table.addPropertyChangeListener(new PropertyChangeListener() {
