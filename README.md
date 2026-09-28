@@ -2,7 +2,7 @@ A keyword searching tool that currently searches through plain text, DOC and DOC
 
 # Main Screen
 
-The user is welcomed with a blank search bar and a result table at the start.
+The user is welcomed with a blank search bar and an empty result table at the start.
 
 <img width="1520" height="856" alt="asdff_fjdslk" src="https://github.com/user-attachments/assets/eb8a514b-d342-4e78-b829-113ca736fc88" />
 
