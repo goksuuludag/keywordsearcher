@@ -2,21 +2,26 @@ package main.java.view.component.dialog;
 
 import main.java.config.locale.LocaleHandler;
 import main.java.model.ConsoleOutputModel;
-import main.java.model.ConsoleOutputModel.*;
-import main.java.view.component.misc.minesweeper.main.MineSweeperPanel;
-import main.java.view.util.image.ImageRegistry;
+import main.java.model.ConsoleOutputModel.ConsoleOutput;
 import main.java.view.component.misc.drawingcanvas.DrawingCanvas;
+import main.java.view.component.misc.minesweeper.main.MineSweeperPanel;
 import main.java.view.renderer.WordWrapCellRenderer;
+import main.java.view.util.image.ImageRegistry;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.TableColumn;
 import java.awt.*;
-import java.io.*;
-import java.util.List;
+import java.awt.event.WindowEvent;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ConsoleDialog extends JDialog {
     private final double[] columnWeights = {0.15, 0.85};
@@ -26,11 +31,9 @@ public class ConsoleDialog extends JDialog {
     private final ConsoleOutputModel tableModel;
     private final double widthWeight = 0.5;
     private final double widthHeight = 0.6;
-    private JLabel lblCig;
-    private JLabel lblDone;
-    private final JButton btnClose;
     private final boolean[] isCancelled;
     private JTextArea txtAreaCurrentFileName;
+    private final List<Runnable> onSearchComplete;
 
     // TODO fix the textarea placing and how it gets the file names!!
     public ConsoleDialog() {
@@ -39,21 +42,24 @@ public class ConsoleDialog extends JDialog {
         setModal(true);
         setLayout(new BorderLayout());
 
+        onSearchComplete = new ArrayList<>();
         isCancelled = new boolean[]{false};
         tableModel = new ConsoleOutputModel();
         logTable = initAndGetLogTable(width, tableModel);
-        btnClose = getBtnClose();
+        JPanel pnlButtonContainer = initAndGetBtnContainer();
         CardLayout cardLayout = new CardLayout();
         JPanel pnlRecreation = initAndGetPnlRecreation(cardLayout);
-        addToPanelWithBorder("Console", new JScrollPane(logTable), pnlRecreation);
-        addToPanelWithBorder("Canvas", new DrawingCanvas(), pnlRecreation);
-        addToPanelWithBorder("Minesweeper", new MineSweeperPanel(), pnlRecreation);
+        addToPanelWithBorder("title.console", new JScrollPane(logTable), pnlRecreation);
+        addToPanelWithBorder("title.canvas", new DrawingCanvas(), pnlRecreation);
+        addToPanelWithBorder("title.minesweeper", new MineSweeperPanel(), pnlRecreation);
 
         add(getInfoPnl(pnlRecreation, cardLayout), BorderLayout.NORTH);
         add(pnlRecreation, BorderLayout.CENTER);
-        add(btnClose, BorderLayout.SOUTH);
-        setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        add(pnlButtonContainer, BorderLayout.SOUTH);
         consoleBufferWorker.execute();
+
+        onSearchComplete.add(() -> consoleBufferWorker.cancel(true));
+        onSearchComplete.add(() -> System.setErr(originalErr));
     }
 
     private JTable initAndGetLogTable(int totalWidth, ConsoleOutputModel tableModel) {
@@ -143,7 +149,7 @@ public class ConsoleDialog extends JDialog {
         gbcTxtAreaCurrentFileName.gridy = 2;
         pnlInfo.add(txtAreaCurrentFileName, gbcTxtAreaCurrentFileName);
 
-        lblDone = new JLabel(LocaleHandler.getString("component.lblDone"));
+        JLabel lblDone = new JLabel(LocaleHandler.getString("component.lblDone"));
         GridBagConstraints gbcLblDone = new GridBagConstraints();
         gbcLblDone.insets = new Insets(0, 10, 0, 10);
         gbcLblDone.fill = GridBagConstraints.NONE;
@@ -153,10 +159,11 @@ public class ConsoleDialog extends JDialog {
         gbcLblDone.gridx = 0;
         gbcLblDone.gridy = 3;
         lblDone.setVisible(false);
+        onSearchComplete.add(() -> lblDone.setVisible(true));
         pnlInfo.add(lblDone, gbcLblDone);
 
         ImageIcon scaledIcon = ImageRegistry.getScaledIcon("cig2.gif", 90, 90);
-        lblCig = new JLabel(scaledIcon);
+        JLabel lblCig = new JLabel(scaledIcon);
         GridBagConstraints gbcLblCig = new GridBagConstraints();
         gbcLblCig.insets = new Insets(0, 10, 0, 10);
         gbcLblCig.fill = GridBagConstraints.HORIZONTAL;
@@ -165,18 +172,36 @@ public class ConsoleDialog extends JDialog {
         gbcLblCig.gridx = 2;
         gbcLblCig.gridy = 0;
         pnlRecreationHeaderContainer.add(lblCig, gbcLblCig);
-
+        onSearchComplete.add(() -> {
+            ImageIcon newIcon = ImageRegistry.getScaledIcon("cig2_lastFrame.png", 90, 90);
+            lblCig.setIcon(newIcon);
+        });
         return pnlInfo;
     }
 
-    private JButton getBtnClose() {
-        JButton btnClose = new JButton(LocaleHandler.getString("component.btnClose"));
-        btnClose.addActionListener(l -> {
+
+    private JPanel initAndGetBtnContainer() {
+        JPanel pnlBtnContainer = new JPanel();
+        JButton btnOk = new JButton(LocaleHandler.getString("component.btnOk"));
+        btnOk.addActionListener(l -> {
+            dispose();
+        });
+        btnOk.setEnabled(false);
+        onSearchComplete.add(() -> btnOk.setEnabled(true));
+
+        JButton btnCancel = new JButton(LocaleHandler.getString("component.btnCancel"));
+        btnCancel.addActionListener(l -> {
+            consoleBufferWorker.cancel(true);
             System.setErr(originalErr);
             isCancelled[0] = true;
             dispose();
         });
-        return btnClose;
+        onSearchComplete.add(() -> btnCancel.setEnabled(false));
+
+        pnlBtnContainer.add(btnCancel);
+        pnlBtnContainer.add(btnOk);
+
+        return pnlBtnContainer;
     }
 
     private JButton initAndGetBtnRecreation(JPanel pnlRecreation, CardLayout cardLayout) {
@@ -190,18 +215,15 @@ public class ConsoleDialog extends JDialog {
     }
 
     private void addToPanelWithBorder(String title, JComponent componentToAdd, JComponent container) {
-        Border border = new TitledBorder(title);
+        Border border = new TitledBorder(LocaleHandler.getString(title));
         componentToAdd.setBorder(border);
         container.add(title, componentToAdd);
     }
 
     public void fireSearchComplete() {
-        ImageIcon scaledIcon = ImageRegistry.getScaledIcon("cig2_lastFrame.png", 90, 90);
-        lblCig.setIcon(scaledIcon);
-        lblDone.setVisible(true);
-        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        System.setErr(originalErr);
-        consoleBufferWorker.cancel(true);
+        for (Runnable runnable : onSearchComplete) {
+            runnable.run();
+        }
     }
 
     public void showDialog() {
@@ -235,6 +257,7 @@ public class ConsoleDialog extends JDialog {
         protected Void doInBackground() throws Exception {
             OutputStream outStream = new ByteArrayOutputStream() {
                 private final StringBuilder buffer = new StringBuilder();
+
                 @Override
                 public void write(int b) {
                     originalErr.write(b);
@@ -280,4 +303,16 @@ public class ConsoleDialog extends JDialog {
             addLogToTable((JScrollPane) logTable.getParent().getParent(), tableModel, chunks);
         }
     };
+
+    @Override
+    protected void processWindowEvent(WindowEvent e) {
+        super.processWindowEvent(e);
+
+        if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+            consoleBufferWorker.cancel(true);
+            System.setErr(originalErr);
+            isCancelled[0] = true;
+            dispose();
+        }
+    }
 }
