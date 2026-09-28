@@ -99,6 +99,6 @@ Locale can be set with:
     !supported locales:en,tr
     locale=en
     
-Currently "tr" and "en" locales are supported. 
+Currently "en" and "tr" locales are supported. 
 
 If the user wishes to add support for another language, after adding a dedicated properties file named "<locale>.properties" under directory "resources/locale/app/", user should change the locale property value inside the app.properties file to newly added locale.
