@@ -151,7 +151,7 @@ public class MainController {
                 final ConsoleDialog dialog = new ConsoleDialog();
                 boolean[] isCancelled = dialog.isCancelled();
                 dialog.showDialog();
-                List<Path> fileList = FileSearcher.getFilesContainingKeywordParallel(keyword, directory, isCancelled, dialog.getTxtAreaCurrentFileName());
+                List<Path> fileList = FileSearcher.getFilesContainingKeywordParallel(keyword, directory, isCancelled, dialog.getTxtAreaCurrentFileName()/*TODO inject file name to the dialog some other way if possible*/);
                 for (Path filePath : fileList) {
                     String fileName = filePath.getFileName().toString();
                     fileName = fileName.substring(0, fileName.lastIndexOf("."));

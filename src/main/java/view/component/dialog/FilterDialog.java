@@ -12,6 +12,7 @@ import java.awt.event.*;
 import java.util.*;
 import java.util.List;
 
+//TODO separate view from logic
 public class FilterDialog extends JDialog {
 
     private static FilterDialog instance;
