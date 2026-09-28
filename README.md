@@ -28,7 +28,7 @@ The user is welcomed with a blank search bar and an empty result table at the st
 
 As mentioned before, there are extra components that could be utilized or enjoyed(?) based on user's preference or needs.
 
-## The Recreational Area
+## The Recreational Area Dialog
 
 This dialog opens after a search is triggered. Based on the scope of the search it could take a minute, so there are a few ways provided by this area that will help the user pass the time as the search gets completed.
 
@@ -36,7 +36,7 @@ There could also be times where the user may want to cut the search short, which
 
 <img width="1266" height="857" alt="consolee" src="https://github.com/user-attachments/assets/658932f8-0063-41a2-858f-1b1e7124758a" />
 
-### The Recreational Area Components
+### The Recreational Area Dialog Components
 
 <img width="1313" height="902" alt="consolee_2" src="https://github.com/user-attachments/assets/2555fba9-09c7-4f3f-bc24-30d8b83ce703" />
 
