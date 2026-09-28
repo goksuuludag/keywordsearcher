@@ -154,6 +154,7 @@ public class MainController {
                 List<Path> fileList = FileSearcher.getFilesContainingKeywordParallel(keyword, directory, isCancelled, dialog.getTxtAreaCurrentFileName());
                 for (Path filePath : fileList) {
                     String fileName = filePath.getFileName().toString();
+                    fileName = fileName.substring(0, fileName.lastIndexOf("."));
                     String extension = TextFile.getExtension(filePath);
                     model.addToList(fileName, filePath, extension);
                 }

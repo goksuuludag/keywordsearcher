@@ -19,14 +19,17 @@ public class FileNameWithIconRenderer extends DefaultTableCellRenderer {
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         JLabel lbl = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         String fileName = (String) value;
-        Icon fileIcon = iconMap.computeIfAbsent(getExtension(fileName), k -> {
-            QueryResultModel model = (QueryResultModel) table.getModel();
+        QueryResultModel model = (QueryResultModel) table.getModel();
+        int extensionColumnIndex = model.getColumnIndexFromName("extension");
+        String extension = (String) table.getValueAt(row, extensionColumnIndex);
+        Icon fileIcon = iconMap.computeIfAbsent(extension, k -> {
             int filePathColumnIndex = model.getColumnIndexFromName("filePath");
             Path filePath = (Path) table.getValueAt(row, filePathColumnIndex);
             File file = filePath.toFile();
             return fileSystemView.getFileSystemView().getSystemIcon(file);
         });
         lbl.setIcon(fileIcon);
+        lbl.setText(fileName.concat(".").concat(extension));
         return lbl;
     }
 
