@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class Main {
+    //TODO rearrange packages
     public static void main(String[] args) {
         setLocale(ConfigHandler.getLocale());
         if (args.length == 0) {
