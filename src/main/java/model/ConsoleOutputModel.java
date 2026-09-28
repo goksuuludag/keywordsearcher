@@ -27,7 +27,7 @@ public class ConsoleOutputModel extends AbstractTableModel {
         Object value;
         ConsoleOutput consoleOutput = list.get(rowIndex);
         if (consoleOutput == null) {
-            System.err.println("Invalid row index: " + rowIndex);
+            System.err.println(LocaleHandler.getString("error.invalid.row.index") + ": " + rowIndex);
             return null;
         }
         try {
@@ -36,11 +36,11 @@ public class ConsoleOutputModel extends AbstractTableModel {
             field.setAccessible(true);
             value = field.get(consoleOutput);
         } catch (ArrayIndexOutOfBoundsException e) {
-            System.err.println("Invalid column index: " + columnIndex);
+            System.err.println(LocaleHandler.getString("error.invalid.column.index") + ": " + columnIndex);
             return null;
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
-            System.err.println("Reflection error for field: " + getColumnName(columnIndex) + "\n " + e.getMessage());
+            System.err.println(LocaleHandler.getString("error.reflection.error.for.field") + ": "+ getColumnName(columnIndex) + "\n " + e.getMessage());
             return null;
         }
         return value;
@@ -49,9 +49,11 @@ public class ConsoleOutputModel extends AbstractTableModel {
     public void addRow(ConsoleOutput output) {
         list.add(output);
     }
+
     public void addRow(List<ConsoleOutput> outputs) {
         list.addAll(outputs);
     }
+
     public void removeRow(int index) {
         list.remove(index);
     }
@@ -62,12 +64,11 @@ public class ConsoleOutputModel extends AbstractTableModel {
     }
 
     public int getColumnIndexFromName(String columnName) {
-        for(int i = 0; i < columns.length; i++) {
-            if(getColumnName(i).equals(columnName)) {
+        for (int i = 0; i < columns.length; i++) {
+            if (getColumnName(i).equals(columnName)) {
                 return i;
             }
         }
-        System.err.println("No such column with name <" + columnName + "> in query result table.");
         System.err.println(LocaleHandler.getString("error.no.such.column") + ":" + columnName);
         return -1;
     }
@@ -76,5 +77,6 @@ public class ConsoleOutputModel extends AbstractTableModel {
         list.clear();
     }
 
-    public static record ConsoleOutput(String time, String output) { }
+    public static record ConsoleOutput(String time, String output) {
+    }
 }
