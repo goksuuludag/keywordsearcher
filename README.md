@@ -8,7 +8,7 @@ The user is welcomed with a blank search bar and a result table at the start.
 
 ## Main Screen Components
 
-<img width="1520" height="856" alt="asdff" src="https://github.com/user-attachments/assets/e32d274c-2def-44f8-a779-b2ee78c5701d" />
+<img width="1581" height="905" alt="asdff" src="https://github.com/user-attachments/assets/509b65fb-16b1-42ec-a247-332a45a8d31c" />
 
 1. The button that opens the directory selecting screen. The given keyword will be searched inside this directory.
 
@@ -19,6 +19,10 @@ The user is welcomed with a blank search bar and a result table at the start.
 4. The button that opens the filtering options screen. The filters to be applied to the result set could be set before or after the searching process.
 
 5. The button that removes the current filter.
+
+6. The table that contains the result set after a search. Rows can be double clicked to display the file on the file explorer.
+
+7. The footer that displays the whole and displaying result set count. The current row index being hovered over is also displayed on the right side.
 
 # Extra components
 
