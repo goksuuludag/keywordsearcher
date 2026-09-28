@@ -68,6 +68,37 @@ This dialog displays filter options to apply to the eventual set of results that
 
 ## Some Things to Mention
 
-The main file types and the extensions said types include come from the main configuration file (/resources/config/app.properties). I do not recommend touching the DOC and DOCX types and extensions they include but the plain text extensions can be added and removed as needed, as long as any new extension added corresponds to files that contain actual plain text. Otherwise the plain text search will not work on those files!
+### Configurations
 
-Minesweeper grid and mine count settings can also be adjusted.
+***File types***
+
+The main file types and the extensions said types include come from the main configuration file (/resources/config/app.properties) as:
+
+        !this variable is used to traverse the extension variables below it
+        fileTypes=text,docx,doc
+        !these variables are used (in TextFile.java)! Even though they appear grey(depending on your IDE of choice)!
+        textFileExtensions=txt,md,json,yaml,yml,xml,html,readme,text,plain,ascii,log,java,py,c,cpp,js,css,jsx,go
+        docxFileExtensions=docx,_docx
+        docFileExtensions=doc,_doc
+
+I do not recommend touching the DOC and DOCX types and extensions they include, but the plain text extensions can be added and removed as needed, as long as any new extension added corresponds to files that contain actual plain text. Otherwise the plain text search will not work on those files!
+
+***Minesweeper***
+
+Minesweeper grid and mine count settings can be adjusted with:
+
+    !minesweeper
+    minesweeperTileWidth=12
+    minesweeperTileHeight=12
+    minesweeperMineCount=24
+
+***Locale***
+
+Locale can be set with:
+
+    !supported locales:en,tr
+    locale=en
+    
+Currently "tr" and "en" locales are supported. 
+
+If the user wishes to add support for another language, after adding a dedicated properties file named "<locale>.properties" under directory "resources/locale/app/", user should change the locale property value inside the app.properties file to newly added locale.
