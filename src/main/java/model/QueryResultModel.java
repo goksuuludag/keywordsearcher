@@ -1,10 +1,13 @@
 package main.java.model;
 
+import main.java.config.locale.LocaleHandler;
+
 import javax.swing.table.AbstractTableModel;
 import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class QueryResultModel extends AbstractTableModel {
     private final Field[] columns = QueryResult.class.getDeclaredFields();
@@ -25,7 +28,7 @@ public class QueryResultModel extends AbstractTableModel {
         Object value;
         QueryResult queryResult = list.get(rowIndex);
         if (queryResult == null) {
-            System.err.println("Invalid row index: " + rowIndex);
+            System.err.println(LocaleHandler.getString("error.invalid.row.index")+ ": " + rowIndex);
             return null;
         }
         try {
@@ -34,11 +37,11 @@ public class QueryResultModel extends AbstractTableModel {
             field.setAccessible(true);
             value = field.get(queryResult);
         } catch (ArrayIndexOutOfBoundsException e) {
-            System.err.println("Invalid column index: " + columnIndex);
+            System.err.println(LocaleHandler.getString("error.invalid.column.index")+ ": " + columnIndex);
             return null;
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
-            System.err.println("Reflection error for field: " + getColumnName(columnIndex) + "\n " + e.getMessage());
+            System.err.println(LocaleHandler.getString("error.reflection.error.for.field")+ ": " + getColumnName(columnIndex) + "\n " + e.getMessage());
             return null;
         }
         return value;
@@ -55,7 +58,7 @@ public class QueryResultModel extends AbstractTableModel {
                 return i;
             }
         }
-        System.err.println("No such column with name <" + columnName + "> in query result table.");
+        System.err.println(LocaleHandler.getString("error.reflection.error.for.field") + " <" + columnName + ">");
         return -1;
     }
 
