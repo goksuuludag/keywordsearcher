@@ -5,6 +5,7 @@ import main.java.config.locale.LocaleHandler;
 import main.java.controller.searcher.strategy.DocFileSearchingStrategy;
 import main.java.controller.searcher.strategy.DocxFileSearchingStrategy;
 import main.java.controller.searcher.strategy.PlainTextFileSearchingStrategy;
+import main.java.model.QueryResultModel;
 
 import javax.swing.*;
 import java.io.File;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public class FileSearcher {
@@ -72,8 +74,8 @@ public class FileSearcher {
         }
         return fileList;
     }
-    //TODO add cancel search
-    public static List<Path> getFilesContainingKeywordParallel(String keyword, String directory, boolean[] isCancelled, JTextArea txtAreaCurrentFileName) {
+
+    public static List<Path> getFilesContainingKeywordParallel(String keyword, String directory) {
         Path path = Paths.get(directory);
         List<Path> fileList = new ArrayList<>();
         try(Stream<Path> stream = Files.list(path).filter(Files::isDirectory)) {
@@ -84,9 +86,6 @@ public class FileSearcher {
                     Files.walkFileTree(dir, new SimpleFileVisitor<Path>() {
                         @Override
                         public FileVisitResult visitFile(Path p, BasicFileAttributes attrs) {
-                            if(isCancelled[0]) {
-                                return FileVisitResult.TERMINATE;
-                            }
                             if (!Files.isReadable(p) || !Files.isRegularFile(p)) {
                                 return FileVisitResult.CONTINUE;
                             }
@@ -100,7 +99,6 @@ public class FileSearcher {
                             if(fileType == null) {
                                 return FileVisitResult.CONTINUE;
                             }
-                            txtAreaCurrentFileName.setText(p.toString());
                             FileSearchingContext searchingContext = new FileSearchingContext(strategyMap.get(fileType));
                             if (searchingContext.search(p, keyword)) {
                                 found.add(p);
@@ -122,5 +120,59 @@ public class FileSearcher {
             System.err.println(LocaleHandler.getString("error.walking.directory") + ": " + e.getMessage());
         }
         return fileList;
+    }
+
+    public static List<QueryResultModel.QueryResult> getFilesContainingKeywordParallelCancellable(String keyword, String directory, boolean[] isCancelled, Consumer<String> onVisitFile) {
+        Path path = Paths.get(directory);
+        List<QueryResultModel.QueryResult> results = new ArrayList<>();
+        try(Stream<Path> stream = Files.list(path).filter(Files::isDirectory)) {
+            List<Path> topDirectories = stream.toList();
+            results = topDirectories.parallelStream().flatMap(dir -> {
+                List<QueryResultModel.QueryResult> found = new ArrayList<>();
+                try {
+                    Files.walkFileTree(dir, new SimpleFileVisitor<>() {
+                        @Override
+                        public FileVisitResult visitFile(Path p, BasicFileAttributes attrs) {
+                            onVisitFile.accept(p.toString());
+                            if(isCancelled[0]) {
+                                return FileVisitResult.TERMINATE;
+                            }
+                            if (!Files.isReadable(p) || !Files.isRegularFile(p)) {
+                                return FileVisitResult.CONTINUE;
+                            }
+                            String fileType = null;
+                            for(String type : ConfigHandler.getProperty("fileTypes").split(",")) {
+                                if(TextFile.isFileOfType(p, type)) {
+                                    fileType = type;
+                                    break;
+                                }
+                            }
+                            if(fileType == null) {
+                                return FileVisitResult.CONTINUE;
+                            }
+                            FileSearchingContext searchingContext = new FileSearchingContext(strategyMap.get(fileType));
+                            if (searchingContext.search(p, keyword)) {
+                                String fileName = p.getFileName().toString();
+                                fileName = fileName.substring(0, fileName.lastIndexOf("."));
+                                String extension = TextFile.getExtension(p);
+                                found.add(new QueryResultModel.QueryResult(fileName, p, extension));
+                            }
+                            return FileVisitResult.CONTINUE;
+                        }
+
+                        @Override
+                        public FileVisitResult visitFileFailed(Path file, IOException exc) {
+                            return FileVisitResult.CONTINUE;
+                        }
+                    });
+                } catch (IOException e) {
+                    // shouldn't normally hit this since visitFileFailed handles it
+                }
+                return found.stream();
+            }).toList();
+        } catch (IOException | SecurityException | NullPointerException e) {
+            System.err.println(LocaleHandler.getString("error.walking.directory") + ": " + e.getMessage());
+        }
+        return results;
     }
 }

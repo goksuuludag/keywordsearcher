@@ -67,5 +67,9 @@ public class QueryResultModel extends AbstractTableModel {
         list.clear();
     }
 
-    private record QueryResult(String fileName, Path filePath, String extension) { }
+    public List<QueryResult> getList() {
+        return list;
+    }
+
+    public record QueryResult(String fileName, Path filePath, String extension) { }
 }

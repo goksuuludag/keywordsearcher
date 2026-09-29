@@ -22,10 +22,13 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 public class MainController {
     private final MainView view;
@@ -151,15 +154,11 @@ public class MainController {
                 final ConsoleDialog dialog = new ConsoleDialog();
                 boolean[] isCancelled = dialog.isCancelled();
                 dialog.showDialog();
-                List<Path> fileList = FileSearcher.getFilesContainingKeywordParallel(keyword, directory, isCancelled, dialog.getTxtAreaCurrentFileName()/*TODO inject file name to the dialog some other way if possible*/);
-                for (Path filePath : fileList) {
-                    String fileName = filePath.getFileName().toString();
-                    fileName = fileName.substring(0, fileName.lastIndexOf("."));
-                    String extension = TextFile.getExtension(filePath);
-                    model.addToList(fileName, filePath, extension);
-                }
+                Consumer<String> onVisitFile = txt -> SwingUtilities.invokeLater(() -> dialog.getTxtAreaCurrentFileName().setText(txt));
+                List<QueryResultModel.QueryResult> results = FileSearcher.getFilesContainingKeywordParallelCancellable(keyword, directory, isCancelled, onVisitFile);
+                model.getList().addAll(results);
                 SwingUtilities.invokeLater(model::fireTableDataChanged);
-                view.getLblSearchResultCount().setText(String.valueOf(fileList.size()));
+                SwingUtilities.invokeLater(() -> view.getLblSearchResultCount().setText(String.valueOf(model.getRowCount())));
                 dialog.fireSearchComplete();
             });
         });
