@@ -40,7 +40,6 @@ public class QueryResultModel extends AbstractTableModel {
             System.err.println(LocaleHandler.getString("error.invalid.column.index")+ ": " + columnIndex);
             return null;
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
             System.err.println(LocaleHandler.getString("error.reflection.error.for.field")+ ": " + getColumnName(columnIndex) + "\n " + e.getMessage());
             return null;
         }
